@@ -1699,5 +1699,291 @@ textarea:focus {
   margin-top: 0.1rem;
 }
 
+/* ==========================================================================
+   index4 低年級注音語音版 (Junior Mode：標準台灣國小課本「每個國字右方直排注音」+ 語音錄音工作台)
+   ========================================================================== */
+ruby {
+  display: inline;
+}
+
+/* 每個國字 + 右方直排注音的單字方塊 (Bopomofo Right-Side Character Unit) */
+.zy-w {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-right: 0.16em;
+  line-height: 1.35;
+}
+
+.zy-c {
+  display: inline-block;
+  font-size: 1.05em;
+  line-height: 1.15;
+}
+
+.zy-p {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 1.5px;
+  position: relative;
+}
+
+/* 輕聲點（˙）置於注音上方中央 */
+.zy-light {
+  position: absolute;
+  top: -0.58em;
+  left: 0.16em;
+  font-size: 0.52em;
+  font-weight: 900;
+  line-height: 1;
+  color: #2e4a0f;
+}
+
+/* 聲母、介音、韻母在國字右方直向排列（清晰高對比） */
+.zy-b {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.41em;
+  font-weight: 900;
+  line-height: 1.02;
+  color: #2e4a0f;
+  letter-spacing: 0;
+}
+
+.zy-b i {
+  font-style: normal;
+  display: block;
+  line-height: 1.02;
+}
+
+/* 二、三、四聲調號置於注音右方中間偏下 */
+.zy-t {
+  display: inline-block;
+  font-size: 0.44em;
+  font-weight: 900;
+  line-height: 1;
+  margin-left: -0.5px;
+  color: #2e4a0f;
+  transform: translateY(0.08em);
+}
+
+.nav-tab-btn.active .zy-b,
+.nav-tab-btn.active .zy-t,
+.nav-tab-btn.active .zy-light,
+.btn-primary .zy-b,
+.btn-primary .zy-t,
+.btn-primary .zy-light,
+.btn-gold .zy-b,
+.btn-gold .zy-t,
+.btn-gold .zy-light,
+.btn-login-modal .zy-b,
+.btn-login-modal .zy-t,
+.btn-login-modal .zy-light,
+.identity-tab-btn.active .zy-b,
+.identity-tab-btn.active .zy-t,
+.identity-tab-btn.active .zy-light,
+.voice-rec-btn .zy-b,
+.voice-rec-btn .zy-t,
+.voice-rec-btn .zy-light,
+.thick-btn.active .zy-b,
+.thick-btn.active .zy-t,
+.thick-btn.active .zy-light,
+.rate-face-btn.active .zy-b,
+.rate-face-btn.active .zy-t,
+.rate-face-btn.active .zy-light {
+  color: #fef08a;
+}
+
+.junior-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  background: #fef08a;
+  color: #854d0e;
+  border: 1.5px solid #facc15;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  vertical-align: middle;
+  margin-left: 0.35rem;
+}
+
+.junior-step-card {
+  background: #fcfdf5;
+  border: 2.5px solid #bef264;
+  border-radius: 20px;
+  padding: 1.05rem 1.15rem;
+  margin-bottom: 1rem;
+}
+
+.junior-step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.junior-step-header h4 {
+  font-size: 1.08rem;
+  font-weight: 900;
+  color: #365314;
+}
+
+.junior-num-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #65a30d;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(101, 163, 13, 0.28);
+}
+
+/* 低年級四排獨立全寬區塊（分類、頁數、星級、心情貼紙各占一整橫排，絕不擠壓折行） */
+.junior-single-row {
+  margin-bottom: 1.05rem;
+  padding-bottom: 0.95rem;
+  border-bottom: 1.5px dashed #d9f99d;
+}
+
+.junior-single-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.junior-single-row > label {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 900;
+  color: #365314;
+  margin-bottom: 0.5rem;
+}
+
+.junior-thickness-btns,
+.junior-rating-btns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .junior-thickness-btns,
+  .junior-rating-btns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.thick-btn,
+.rate-face-btn {
+  background: #ffffff;
+  color: #365314;
+  border: 2px solid #d9f99d;
+  border-radius: 14px;
+  padding: 0.55rem 0.5rem;
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.thick-btn:hover,
+.rate-face-btn:hover {
+  background: #f7fee7;
+  border-color: #84cc16;
+}
+
+.thick-btn.active,
+.rate-face-btn.active {
+  background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+  color: #ffffff;
+  border-color: #4d7c0f;
+  box-shadow: 0 4px 12px rgba(101, 163, 13, 0.28);
+}
+
+.thick-btn.active rt,
+.rate-face-btn.active rt {
+  color: #fef08a;
+}
+
+/* 語音錄音工作台 */
+.voice-recorder-box {
+  background: #ffffff;
+  border: 2.5px dashed #84cc16;
+  border-radius: 18px;
+  padding: 1rem;
+}
+
+.voice-recorder-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.voice-btn-row {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.voice-rec-btn {
+  flex: 1;
+  min-width: 220px;
+  background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+  color: #ffffff;
+  border: 2.5px solid #fecaca;
+  border-radius: 16px;
+  padding: 0.85rem 1.2rem;
+  font-size: 1.05rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.voice-rec-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(239, 68, 68, 0.38);
+}
+
+.voice-rec-btn.recording {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  animation: pulseRec 1.1s infinite alternate;
+}
+
+@keyframes pulseRec {
+  from { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
+  to { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+}
+
+.review-audio-box {
+  margin-top: 0.6rem;
+  background: #f7fee7;
+  border: 1.5px solid #a3e635;
+  border-radius: 14px;
+  padding: 0.55rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+
 
 

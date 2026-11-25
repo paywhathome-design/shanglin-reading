@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>上林閱讀生態系（低年級注音語音版）</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="junior-mode" data-junior="1">
+
+  <!-- 頂部導覽列（低年級注音版 + 精簡版頭 + 滿版淡化團體照 + 上林國小校徽） -->
+  <header class="top-navbar has-group-bg compact-header">
+    <div class="header-bg-photo" style="background-image: url('./assets/images/group_photo.jpg');"></div>
+    <div class="header-bg-overlay"></div>
+
+    <div class="navbar-inner">
+      <div class="brand-logo">
+        <div class="brand-emblem school-logo-emblem" title="新北市雙溪區上林國小校徽">
+          <img src="./assets/images/school_logo.png" alt="上林國小校徽" class="brand-school-logo-img" />
+        </div>
+        <div class="brand-group-photo-pill" onclick="openGroupPhotoModal()" title="點擊放大檢視「美好上林」師生團體照">
+          <img src="./assets/images/group_photo.jpg" alt="上林國小師生團體照" />
+        </div>
+        <div class="brand-title">
+          <h1>
+            <ruby>上<rt>ㄕㄤˋ</rt>林<rt>ㄌㄧㄣˊ</rt>閱<rt>ㄩㄝˋ</rt>讀<rt>ㄉㄨˊ</rt>生<rt>ㄕㄥ</rt>態<rt>ㄊㄞˋ</rt>系<rt>ㄒㄧˋ</rt></ruby>
+            <span class="junior-mode-pill">🐣 <ruby>低<rt>ㄉㄧ</rt>年<rt>ㄋㄧㄢˊ</rt>級<rt>ㄐㄧˊ</rt>語<rt>ㄩˇ</rt>音<rt>ㄧㄣ</rt>注<rt>ㄓㄨˋ</rt>音<rt>ㄧㄣ</rt>版<rt>ㄅㄢˇ</rt></ruby></span>
+          </h1>
+          <p><ruby>看<rt>ㄎㄢˋ</rt>繪<rt>ㄏㄨㄟˋ</rt>本<rt>ㄅㄣˇ</rt>・<rt></rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>說<rt>ㄕㄨㄛ</rt>故<rt>ㄍㄨˋ</rt>事<rt>ㄕˋ</rt>・<rt></rt>養<rt>ㄧㄤˇ</rt>成<rt>ㄔㄥˊ</rt>雙<rt>ㄕㄨㄤ</rt>溪<rt>ㄒㄧ</rt>可<rt>ㄎㄜˇ</rt>愛<rt>ㄞˋ</rt>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt></ruby></p>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" aria-label="主功能選單">
+        <button class="nav-tab-btn active" data-tab="dashboard">🛡️ <ruby>我<rt>ㄨㄛˇ</rt>的<rt>˙ㄉㄜ</rt>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt></ruby></button>
+        <button class="nav-tab-btn" data-tab="quest">🎙️ <ruby>看<rt>ㄎㄢˋ</rt>書<rt>ㄕㄨ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>打<rt>ㄉㄚˇ</rt>卡<rt>ㄎㄚˇ</rt></ruby></button>
+        <button class="nav-tab-btn" data-tab="classes">🐾 <ruby>選<rt>ㄒㄩㄢˇ</rt>擇<rt>ㄗㄜˊ</rt>動<rt>ㄉㄨㄥˋ</rt>物<rt>ㄨˋ</rt>角<rt>ㄐㄩㄝˊ</rt>色<rt>ㄙㄜˋ</rt></ruby></button>
+        <button class="nav-tab-btn" data-tab="wall">💬 <ruby>故<rt>ㄍㄨˋ</rt>事<rt>ㄕˋ</rt>分<rt>ㄈㄣ</rt>享<rt>ㄒㄧㄤˇ</rt>牆<rt>ㄑㄧㄤˊ</rt></ruby></button>
+        <button class="nav-tab-btn" data-tab="leaderboard">🏆 <ruby>榮<rt>ㄖㄨㄥˊ</rt>譽<rt>ㄩˋ</rt>榜<rt>ㄅㄤˇ</rt></ruby></button>
+        <button id="navTabTeacherBtn" class="nav-tab-btn teacher-only-el" data-tab="teacher" style="display:none;">🎨 角色圖案工坊 & 教師管理</button>
+      </nav>
+
+      <div class="user-switcher">
+        <a href="./index3.html" class="btn-outline" style="padding:0.3rem 0.6rem; font-size:0.76rem; text-decoration:none;" title="切換至中高年級標準版">📘 中高年級版</a>
+        <button type="button" class="btn-outline" style="padding:0.3rem 0.65rem; font-size:0.78rem;" onclick="openQrCodeModal()" title="顯示並下載上林閱讀生態系 QR Code 海報">📱 QR Code</button>
+        <span id="syncStatusPill" class="sync-pill online">● 連線中</span>
+        <select id="studentSwitcher" class="account-select" title="快速切換展示身分與帳號"></select>
+        <button id="btnOpenLogin" class="btn-login-modal">🔑 <ruby>我<rt>ㄨㄛˇ</rt>是<rt>ㄕˋ</rt>誰<rt>ㄕㄟˊ</rt></ruby></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主內容區 -->
+  <main class="main-container">
+
+    <!-- 角色英雄狀態橫幅 (精簡高度，保留完整角色滿框展示與閱讀數據) -->
+    <section class="hero-banner compact-hero" aria-label="當前角色狀態">
+      <div class="hero-grid">
+        <div class="avatar-showcase">
+          <div class="avatar-frame">
+            <img id="heroAvatarImg" src="./assets/characters/pangolin_stage_4.png" alt="角色立繪" />
+          </div>
+          <span id="heroStageRibbon" class="stage-ribbon">STAGE 4 階級</span>
+        </div>
+
+        <div class="hero-info">
+          <div class="hero-badges-top">
+            <span id="heroClassBadge" class="pill-tag gold">🐾 甲寶寶・穿山甲</span>
+            <span id="heroGradeBadge" class="pill-tag">四年忠班</span>
+            <span id="heroCodeBadge" class="pill-tag">座號：01號</span>
+          </div>
+
+          <div class="hero-name-row">
+            <h2>
+              <span id="heroStudentName">林小星</span>
+              <span id="heroStageTitle" class="hero-stage-title">「Lv.4 烈地戰甲」</span>
+            </h2>
+          </div>
+
+          <p id="heroStageDesc" class="hero-desc">
+            身披烈地戰甲的知識衛士，閱讀足跡開始橫跨多個不同的圖書分類領域。
+          </p>
+
+          <div class="xp-bar-container">
+            <div class="xp-label-row">
+              <span id="heroLevelText">Lv.4 冒險等級</span>
+              <span id="heroXpText">1,480 / 1,600 XP（距離下一階晉級還差 120 XP）</span>
+            </div>
+            <div class="xp-track">
+              <div id="heroXpFill" class="xp-fill" style="width: 72%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 三大核心指標：閱讀量、廣度、深度 -->
+        <div class="hero-stats-box">
+          <div class="stat-mini-card">
+            <div id="statTotalBooks" class="stat-value">4 本</div>
+            <div class="stat-label">📚 <ruby>讀<rt>ㄉㄨˊ</rt>過<rt>ㄍㄨㄛˋ</rt>幾<rt>ㄐㄧˇ</rt>本<rt>ㄅㄣˇ</rt>書<rt>ㄕㄨ</rt></ruby></div>
+          </div>
+          <div class="stat-mini-card">
+            <div id="statTotalPages" class="stat-value">1,408 頁</div>
+            <div class="stat-label">📖 <ruby>累<rt>ㄌㄟˇ</rt>積<rt>ㄐㄧ</rt>總<rt>ㄗㄨㄥˇ</rt>頁<rt>ㄧㄝˋ</rt>數<rt>ㄕㄨˋ</rt></ruby></div>
+          </div>
+          <div class="stat-mini-card">
+            <div id="statBreadthCount" class="stat-value">4 / 8 域</div>
+            <div class="stat-label">🧭 <ruby>探<rt>ㄊㄢˋ</rt>索<rt>ㄙㄨㄛˇ</rt>星<rt>ㄒㄧㄥ</rt>球<rt>ㄑㄧㄡˊ</rt></ruby></div>
+          </div>
+          <div class="stat-mini-card">
+            <div id="statAvgDepth" class="stat-value">90 分</div>
+            <div class="stat-label">💎 <ruby>棒<rt>ㄅㄤˋ</rt>棒<rt>ㄅㄤˋ</rt>得<rt>ㄉㄜˊ</rt>分<rt>ㄈㄣ</rt></ruby></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         TAB 1: 我的夥伴大廳 (自我閱讀量、廣度星盤雷達圖、深度分析、晉級路線)
+         ================================================================= -->
+    <section id="tab-dashboard" class="tab-section active">
+
+      <!-- 角色六階晉級路線一覽 -->
+      <div class="panel-card" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <div>
+            <h3>👑 <ruby>雙<rt>ㄕㄨㄤ</rt>溪<rt>ㄒㄧ</rt>可<rt>ㄎㄜˇ</rt>愛<rt>ㄞˋ</rt>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt>六<rt>ㄌㄧㄡˋ</rt>階<rt>ㄐㄧㄝ</rt>段<rt>ㄉㄨㄢˋ</rt>長<rt>ㄓㄤˇ</rt>大<rt>ㄉㄚˋ</rt>變<rt>ㄅㄧㄢˋ</rt>身<rt>ㄕㄣ</rt></ruby></h3>
+            <p class="panel-subtitle"><ruby>每<rt>ㄇㄟˇ</rt>讀<rt>ㄉㄨˊ</rt>完<rt>ㄨㄢˊ</rt>一<rt>ㄧˋ</rt>本<rt>ㄅㄣˇ</rt>書<rt>ㄕㄨ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>分<rt>ㄈㄣ</rt>享<rt>ㄒㄧㄤˇ</rt>，<rt></rt>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt>就<rt>ㄐㄧㄡˋ</rt>會<rt>ㄏㄨㄟˋ</rt>長<rt>ㄓㄤˇ</rt>大<rt>ㄉㄚˋ</rt>並<rt>ㄅㄧㄥˋ</rt>解<rt>ㄐㄧㄝˇ</rt>鎖<rt>ㄙㄨㄛˇ</rt>神<rt>ㄕㄣˊ</rt>秘<rt>ㄇㄧˋ</rt>隱<rt>ㄧㄣˇ</rt>藏<rt>ㄘㄤˊ</rt>版<rt>ㄅㄢˇ</rt>喔<rt>ㄛ</rt>！<rt></rt></ruby></p>
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button class="btn-gold" onclick="switchTab('quest')">🎙️ <ruby>我<rt>ㄨㄛˇ</rt>要<rt>ㄧㄠˋ</rt>看<rt>ㄎㄢˋ</rt>書<rt>ㄕㄨ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>打<rt>ㄉㄚˇ</rt>卡<rt>ㄎㄚˇ</rt></ruby></button>
+            <button class="btn-outline" onclick="switchTab('classes')">🐾 <ruby>換<rt>ㄏㄨㄢˋ</rt>其<rt>ㄑㄧˊ</rt>他<rt>ㄊㄚ</rt>動<rt>ㄉㄨㄥˋ</rt>物<rt>ㄨˋ</rt>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt></ruby></button>
+          </div>
+        </div>
+        <div id="dashboardStageRoadmap" class="stages-roadmap"></div>
+      </div>
+
+      <!-- 閱讀廣度與閱讀深度雙欄分析 -->
+      <div class="dashboard-grid">
+        <!-- 左欄：閱讀廣度八大星域雷達圖 -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div>
+              <h3>🧭 <ruby>我<rt>ㄨㄛˇ</rt>探<rt>ㄊㄢˋ</rt>索<rt>ㄙㄨㄛˇ</rt>過<rt>ㄍㄨㄛˋ</rt>的<rt>˙ㄉㄜ</rt>八<rt>ㄅㄚ</rt>大<rt>ㄉㄚˋ</rt>故<rt>ㄍㄨˋ</rt>事<rt>ㄕˋ</rt>星<rt>ㄒㄧㄥ</rt>球<rt>ㄑㄧㄡˊ</rt></ruby></h3>
+              <p class="panel-subtitle"><ruby>看<rt>ㄎㄢˋ</rt>不<rt>ㄅㄨˋ</rt>同<rt>ㄊㄨㄥˊ</rt>種<rt>ㄓㄨㄥˇ</rt>類<rt>ㄌㄟˋ</rt>的<rt>˙ㄉㄜ</rt>書<rt>ㄕㄨ</rt>可<rt>ㄎㄜˇ</rt>以<rt>ㄧˇ</rt>點<rt>ㄉㄧㄢˇ</rt>亮<rt>ㄌㄧㄤˋ</rt>星<rt>ㄒㄧㄥ</rt>球<rt>ㄑㄧㄡˊ</rt>，<rt></rt>多<rt>ㄉㄨㄛ</rt>送<rt>ㄙㄨㄥˋ</rt> +60 XP 大<rt>ㄉㄚˋ</rt>禮<rt>ㄌㄧˇ</rt>包<rt>ㄅㄠ</rt>！<rt></rt></ruby></p>
+            </div>
+            <span id="breadthRateBadge" class="depth-pill">廣度達成率 50%</span>
+          </div>
+
+          <div class="breadth-layout">
+            <div class="radar-box">
+              <svg id="breadthRadarSvg" width="250" height="250" viewBox="0 0 260 260" aria-label="閱讀廣度雷達圖"></svg>
+            </div>
+            <div id="categoryGridBox" class="category-grid"></div>
+          </div>
+        </div>
+
+        <!-- 右欄：閱讀深度與徽章成就 -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div>
+              <h3>🏅 <ruby>我<rt>ㄨㄛˇ</rt>的<rt>˙ㄉㄜ</rt>閱<rt>ㄩㄝˋ</rt>讀<rt>ㄉㄨˊ</rt>超<rt>ㄔㄠ</rt>能<rt>ㄋㄥˊ</rt>力<rt>ㄌㄧˋ</rt>與<rt>ㄩˇ</rt>獎<rt>ㄐㄧㄤˇ</rt>章<rt>ㄓㄤ</rt></ruby></h3>
+              <p class="panel-subtitle"><ruby>有<rt>ㄧㄡˇ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>或<rt>ㄏㄨㄛˋ</rt>說<rt>ㄕㄨㄛ</rt>出<rt>ㄔㄨ</rt>喜<rt>ㄒㄧˇ</rt>歡<rt>ㄏㄨㄢ</rt>的<rt>˙ㄉㄜ</rt>地<rt>ㄉㄧˋ</rt>方<rt>ㄈㄤ</rt>，<rt></rt>分<rt>ㄈㄣ</rt>數<rt>ㄕㄨˋ</rt>會<rt>ㄏㄨㄟˋ</rt>超<rt>ㄔㄠ</rt>級<rt>ㄐㄧˊ</rt>高<rt>ㄍㄠ</rt>喔<rt>ㄛ</rt>！<rt></rt></ruby></p>
+            </div>
+            <button class="btn-gold" onclick="switchTab('quest')">🎙️ <ruby>馬<rt>ㄇㄚˇ</rt>上<rt>ㄕㄤˋ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>打<rt>ㄉㄚˇ</rt>卡<rt>ㄎㄚˇ</rt></ruby></button>
+          </div>
+
+          <div class="depth-meters">
+            <div class="depth-box">
+              <div id="depthAvgPages" class="d-val">187 頁</div>
+              <div class="d-title"><ruby>平<rt>ㄆㄧㄥˊ</rt>均<rt>ㄐㄩㄣ</rt>頁<rt>ㄧㄝˋ</rt>數<rt>ㄕㄨˋ</rt></ruby></div>
+              <div class="d-sub">看書好認真</div>
+            </div>
+            <div class="depth-box">
+              <div id="depthAvgDiff" class="d-val">3.3 ★</div>
+              <div class="d-title"><ruby>挑<rt>ㄊㄧㄠ</rt>戰<rt>ㄓㄢˋ</rt>星<rt>ㄒㄧㄥ</rt>級<rt>ㄐㄧˊ</rt></ruby></div>
+              <div class="d-sub">勇敢看新書</div>
+            </div>
+            <div class="depth-box">
+              <div id="depthAvgWords" class="d-val">112 字</div>
+              <div class="d-title"><ruby>分<rt>ㄈㄣ</rt>享<rt>ㄒㄧㄤˇ</rt>長<rt>ㄔㄤˊ</rt>度<rt>ㄉㄨˋ</rt></ruby></div>
+              <div class="d-sub">錄音或打字</div>
+            </div>
+          </div>
+
+          <!-- 深度成長視覺條 -->
+          <div style="margin-top: 1.25rem;">
+            <div style="display:flex; justify-content:space-between; font-size:0.86rem; font-weight:800; margin-bottom:0.4rem;">
+              <span>📊 <ruby>我<rt>ㄨㄛˇ</rt>最<rt>ㄗㄨㄟˋ</rt>近<rt>ㄐㄧㄣˋ</rt>讀<rt>ㄉㄨˊ</rt>過<rt>ㄍㄨㄛˋ</rt>的<rt>˙ㄉㄜ</rt>好<rt>ㄏㄠˇ</rt>書<rt>ㄕㄨ</rt></ruby></span>
+              <span id="depthLevelTag" style="color:#4d7c0f;">💎 閱讀小達人</span>
+            </div>
+            <div id="personalDepthBars" style="display:flex; flex-direction:column; gap:0.55rem;"></div>
+          </div>
+
+          <!-- 個人榮譽徽章 -->
+          <div style="margin-top: 1.35rem; padding-top: 1rem; border-top: 2px dashed #d9f99d;">
+            <h4 style="font-size:0.98rem; font-weight:800; margin-bottom:0.75rem;">🏅 <ruby>我<rt>ㄨㄛˇ</rt>收<rt>ㄕㄡ</rt>集<rt>ㄐㄧˊ</rt>到<rt>ㄉㄠˋ</rt>的<rt>˙ㄉㄜ</rt>榮<rt>ㄖㄨㄥˊ</rt>譽<rt>ㄩˋ</rt>徽<rt>ㄏㄨㄟ</rt>章<rt>ㄓㄤ</rt></ruby></h4>
+            <div id="studentBadgesBox" class="badges-grid"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =================================================================
+         TAB 2: 低年級超簡單「看書錄音打卡」任務 (點點選選 + 語音錄音 + 一鍵造句)
+         ================================================================= -->
+    <section id="tab-quest" class="tab-section">
+      <div class="quest-form-grid">
+        <div class="panel-card">
+          <div class="panel-header">
+            <div>
+              <h3>🎙️ <ruby>低<rt>ㄉㄧ</rt>年<rt>ㄋㄧㄢˊ</rt>級<rt>ㄐㄧˊ</rt>看<rt>ㄎㄢˋ</rt>書<rt>ㄕㄨ</rt>打<rt>ㄉㄚˇ</rt>卡<rt>ㄎㄚˇ</rt>（<rt></rt>用<rt>ㄩㄥˋ</rt>說<rt>ㄕㄨㄛ</rt>的<rt>˙ㄉㄜ</rt>或<rt>ㄏㄨㄛˋ</rt>點<rt>ㄉㄧㄢˇ</rt>選<rt>ㄒㄩㄢˇ</rt>就<rt>ㄐㄧㄡˋ</rt>可<rt>ㄎㄜˇ</rt>以<rt>ㄧˇ</rt>喔<rt>ㄛ</rt>！<rt></rt>）<rt></rt></ruby></h3>
+              <p class="panel-subtitle"><ruby>不<rt>ㄅㄨˊ</rt>會<rt>ㄏㄨㄟˋ</rt>打<rt>ㄉㄚˇ</rt>字<rt>ㄗˋ</rt>沒<rt>ㄇㄟˊ</rt>關<rt>ㄍㄨㄢ</rt>係<rt>˙ㄒㄧ</rt>！<rt></rt>寫<rt>ㄒㄧㄝˇ</rt>下<rt>ㄒㄧㄚˋ</rt>書<rt>ㄕㄨ</rt>名<rt>ㄇㄧㄥˊ</rt>，<rt></rt>再<rt>ㄗㄞˋ</rt>按<rt>ㄢˋ</rt>麥<rt>ㄇㄞˋ</rt>克<rt>ㄎㄜˋ</rt>風<rt>ㄈㄥ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>說<rt>ㄕㄨㄛ</rt>一<rt>ㄧˋ</rt>句<rt>ㄐㄩˋ</rt>話<rt>ㄏㄨㄚˋ</rt>，<rt></rt>或<rt>ㄏㄨㄛˋ</rt>點<rt>ㄉㄧㄢˇ</rt>下<rt>ㄒㄧㄚˋ</rt>面<rt>˙ㄇㄧㄢ</rt>的<rt>˙ㄉㄜ</rt>句<rt>ㄐㄩˋ</rt>子<rt>˙ㄗ</rt>按<rt>ㄢˋ</rt>鈕<rt>ㄋㄧㄡˇ</rt>就<rt>ㄐㄧㄡˋ</rt>完<rt>ㄨㄢˊ</rt>成<rt>ㄔㄥˊ</rt>囉<rt>˙ㄌㄨㄛ</rt>！<rt></rt></ruby></p>
+            </div>
+            <button type="button" id="btnFillDemoBook" class="btn-outline">✨ <ruby>看<rt>ㄎㄢˋ</rt>範<rt>ㄈㄢˋ</rt>例<rt>ㄌㄧˋ</rt></ruby></button>
+          </div>
+
+          <form id="reviewQuestForm">
+            <!-- 第一步：我讀了哪一本書 -->
+            <div class="junior-step-card">
+              <div class="junior-step-header">
+                <span class="junior-num-circle">1</span>
+                <h4>📕 <ruby>我<rt>ㄨㄛˇ</rt>讀<rt>ㄉㄨˊ</rt>了<rt>˙ㄌㄜ</rt>哪<rt>ㄋㄚˇ</rt>一<rt>ㄧˋ</rt>本<rt>ㄅㄣˇ</rt>書<rt>ㄕㄨ</rt>？<rt></rt></ruby></h4>
+              </div>
+
+              <!-- 低年級熱門繪本快速點選標籤 -->
+              <div style="margin-bottom:0.75rem;">
+                <span style="font-size:0.82rem; font-weight:800; color:#4d7c0f; display:block; margin-bottom:0.35rem;">
+                  👇 <ruby>可<rt>ㄎㄜˇ</rt>以<rt>ㄧˇ</rt>直<rt>ㄓˊ</rt>接<rt>ㄐㄧㄝ</rt>點<rt>ㄉㄧㄢˇ</rt>選<rt>ㄒㄩㄢˇ</rt>繪<rt>ㄏㄨㄟˋ</rt>本<rt>ㄅㄣˇ</rt>，<rt></rt>或<rt>ㄏㄨㄛˋ</rt>自<rt>ㄗˋ</rt>己<rt>ㄐㄧˇ</rt>打<rt>ㄉㄚˇ</rt>字<rt>ㄗˋ</rt>／<rt></rt>語<rt>ㄩˇ</rt>音<rt>ㄧㄣ</rt>輸<rt>ㄕㄨ</rt>入<rt>ㄖㄨˋ</rt>：<rt></rt></ruby>
+                </span>
+                <div class="quick-fill-chips">
+                  <span class="quick-chip" onclick="juniorQuickPickBook('穿山甲的祕密森林','science',36)">🐾 穿山甲的祕密森林</span>
+                  <span class="quick-chip" onclick="juniorQuickPickBook('好餓的毛毛蟲','science',28)">🐛 好餓的毛毛蟲</span>
+                  <span class="quick-chip" onclick="juniorQuickPickBook('猜猜我有多愛你','literature',32)">🐰 猜猜我有多愛你</span>
+                  <span class="quick-chip" onclick="juniorQuickPickBook('淡蘭古道尋寶記','history_geo',40)">🗺️ 淡蘭古道尋寶記</span>
+                  <span class="quick-chip" onclick="juniorQuickPickBook('山谷裡的藍寶石','arts',45)">🐦 山谷裡的藍寶石</span>
+                  <span class="quick-chip" onclick="juniorQuickPickBook('愛哭公主','philosophy',36)">👑 愛哭公主</span>
+                  <span class="quick-chip" onclick="juniorQuickPickBook('生氣湯','philosophy',32)">🍲 生氣湯</span>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <input type="text" id="bookTitleInput" required placeholder="請輸入書名（或點右邊麥克風念出書名）..." style="font-size:1.1rem; font-weight:800; padding:0.8rem 1rem;" />
+                <button type="button" class="btn-gold" onclick="startSpeechToText('bookTitleInput')" style="padding:0.8rem 1rem; font-size:0.95rem;" title="點擊直接念出書名">
+                  🗣️ <ruby>念<rt>ㄋㄧㄢˋ</rt>書<rt>ㄕㄨ</rt>名<rt>ㄇㄧㄥˊ</rt></ruby>
+                </button>
+              </div>
+              <input type="hidden" id="bookAuthorInput" value="" />
+            </div>
+
+            <!-- 第二步：四排清晰獨立排版（第一排：分類、第二排：頁數、第三排：幾顆星、第四排：心情貼紙） -->
+            <div class="junior-step-card">
+              <div class="junior-step-header">
+                <span class="junior-num-circle">2</span>
+                <h4>🌟 <ruby>點<rt>ㄉㄧㄢˇ</rt>一<rt>ㄧˋ</rt>點<rt>ㄉㄧㄢˇ</rt>：<rt></rt>這<rt>ㄓㄜˋ</rt>是<rt>ㄕˋ</rt>什<rt>ㄕㄣˊ</rt>麼<rt>˙ㄇㄜ</rt>書<rt>ㄕㄨ</rt>？<rt></rt>有<rt>ㄧㄡˇ</rt>多<rt>ㄉㄨㄛ</rt>喜<rt>ㄒㄧˇ</rt>歡<rt>ㄏㄨㄢ</rt>？<rt></rt></ruby></h4>
+              </div>
+
+              <!-- 第一排：這本書的分類 -->
+              <div class="junior-single-row">
+                <label for="bookCategorySelect">🧭 <ruby>這<rt>ㄓㄜˋ</rt>本<rt>ㄅㄣˇ</rt>書<rt>ㄕㄨ</rt>的<rt>˙ㄉㄜ</rt>分<rt>ㄈㄣ</rt>類<rt>ㄌㄟˋ</rt></ruby></label>
+                <select id="bookCategorySelect" required style="font-size:1.02rem; font-weight:800; width:100%;"></select>
+              </div>
+
+              <!-- 第二排：這本書有幾頁 -->
+              <div class="junior-single-row">
+                <label>📖 <ruby>這<rt>ㄓㄜˋ</rt>本<rt>ㄅㄣˇ</rt>書<rt>ㄕㄨ</rt>有<rt>ㄧㄡˇ</rt>幾<rt>ㄐㄧˇ</rt>頁<rt>ㄧㄝˋ</rt>？<rt></rt>（<rt></rt>點<rt>ㄉㄧㄢˇ</rt>選<rt>ㄒㄩㄢˇ</rt>即<rt>ㄐㄧˊ</rt>可<rt>ㄎㄜˇ</rt>）<rt></rt></ruby></label>
+                <div class="junior-thickness-btns">
+                  <button type="button" class="thick-btn active" data-pages="32" data-diff="2" onclick="selectJuniorBookThickness(32, 2, this)">📗 <ruby>薄<rt>ㄅㄠˊ</rt>繪<rt>ㄏㄨㄟˋ</rt>本<rt>ㄅㄣˇ</rt></ruby> (32頁以內)</button>
+                  <button type="button" class="thick-btn" data-pages="64" data-diff="3" onclick="selectJuniorBookThickness(64, 3, this)">📘 <ruby>故<rt>ㄍㄨˋ</rt>事<rt>ㄕˋ</rt>書<rt>ㄕㄨ</rt></ruby> (64頁以內)</button>
+                  <button type="button" class="thick-btn" data-pages="120" data-diff="4" onclick="selectJuniorBookThickness(120, 4, this)">📙 <ruby>厚<rt>ㄏㄡˋ</rt>書<rt>ㄕㄨ</rt>本<rt>ㄅㄣˇ</rt></ruby> (120頁以內)</button>
+                </div>
+                <input type="number" id="bookPagesInput" min="5" max="3000" value="32" style="display:none;" required />
+                <select id="bookDifficultySelect" style="display:none;">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+
+              <!-- 第三排：我給這本書幾顆星 -->
+              <div class="junior-single-row">
+                <label>😍 <ruby>我<rt>ㄨㄛˇ</rt>給<rt>ㄍㄟˇ</rt>這<rt>ㄓㄜˋ</rt>本<rt>ㄅㄣˇ</rt>書<rt>ㄕㄨ</rt>幾<rt>ㄐㄧˇ</rt>顆<rt>ㄎㄜ</rt>星<rt>ㄒㄧㄥ</rt>？<rt></rt></ruby></label>
+                <div class="junior-rating-btns">
+                  <button type="button" class="rate-face-btn active" onclick="selectJuniorRating(5, this)">🥰 <ruby>超<rt>ㄔㄠ</rt>級<rt>ㄐㄧˊ</rt>喜<rt>ㄒㄧˇ</rt>歡<rt>ㄏㄨㄢ</rt></ruby> (5★)</button>
+                  <button type="button" class="rate-face-btn" onclick="selectJuniorRating(4, this)">😊 <ruby>很<rt>ㄏㄣˇ</rt>好<rt>ㄏㄠˇ</rt>看<rt>ㄎㄢˋ</rt></ruby> (4★)</button>
+                  <button type="button" class="rate-face-btn" onclick="selectJuniorRating(3, this)">🙂 <ruby>還<rt>ㄏㄞˊ</rt>不<rt>ㄅㄨˊ</rt>錯<rt>ㄘㄨㄛˋ</rt></ruby> (3★)</button>
+                </div>
+                <select id="bookRatingSelect" style="display:none;">
+                  <option value="5" selected>5</option>
+                  <option value="4">4</option>
+                  <option value="3">3</option>
+                  <option value="2">2</option>
+                  <option value="1">1</option>
+                </select>
+              </div>
+
+              <!-- 第四排：讀完的心情貼紙 -->
+              <div class="junior-single-row" style="margin-bottom:0;">
+                <label>🏷️ <ruby>讀<rt>ㄉㄨˊ</rt>完<rt>ㄨㄢˊ</rt>的<rt>˙ㄉㄜ</rt>心<rt>ㄒㄧㄣ</rt>情<rt>ㄑㄧㄥˊ</rt>貼<rt>ㄊㄧㄝ</rt>紙<rt>ㄓˇ</rt>（<rt></rt>點<rt>ㄉㄧㄢˇ</rt>選<rt>ㄒㄩㄢˇ</rt>）<rt></rt></ruby></label>
+                <div id="moodTagsContainer" class="mood-tags-wrap"></div>
+              </div>
+            </div>
+
+            <!-- 第三步：語音錄音分享 + 一句話輕鬆點選 -->
+            <div class="junior-step-card" style="background:linear-gradient(135deg,#fef9c3 0%,#ecfccb 100%); border-color:#84cc16;">
+              <div class="junior-step-header">
+                <span class="junior-num-circle" style="background:#eab308;">3</span>
+                <h4>🎙️ <ruby>用<rt>ㄩㄥˋ</rt>聲<rt>ㄕㄥ</rt>音<rt>ㄧㄣ</rt>說<rt>ㄕㄨㄛ</rt>一<rt>ㄧ</rt>說<rt>ㄕㄨㄛ</rt>，<rt></rt>或<rt>ㄏㄨㄛˋ</rt>點<rt>ㄉㄧㄢˇ</rt>選<rt>ㄒㄩㄢˇ</rt>一<rt>ㄧˊ</rt>句<rt>ㄐㄩˋ</rt>話<rt>ㄏㄨㄚˋ</rt>！<rt></rt></ruby></h4>
+              </div>
+
+              <!-- 語音錄音工作台 (支援直接錄下小朋友自己的聲音 + 自動語音轉文字) -->
+              <div class="voice-recorder-box">
+                <div class="voice-recorder-top">
+                  <div>
+                    <div style="font-size:1.02rem; font-weight:900; color:#365314;">
+                      🎤 <ruby>小<rt>ㄒㄧㄠˇ</rt>小<rt>ㄒㄧㄠˇ</rt>說<rt>ㄕㄨㄛ</rt>書<rt>ㄕㄨ</rt>人<rt>ㄖㄣˊ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>室<rt>ㄕˋ</rt></ruby>
+                    </div>
+                    <p style="font-size:0.82rem; color:#4d7c0f; font-weight:700;">
+                      <ruby>按<rt>ㄢˋ</rt>下<rt>ㄒㄧㄚˋ</rt>紅<rt>ㄏㄨㄥˊ</rt>色<rt>ㄙㄜˋ</rt>按<rt>ㄢˋ</rt>鈕<rt>ㄋㄧㄡˇ</rt>，<rt></rt>對<rt>ㄉㄨㄟˋ</rt>著<rt>˙ㄓㄜ</rt>平<rt>ㄆㄧㄥˊ</rt>板<rt>ㄅㄢˇ</rt>或<rt>ㄏㄨㄛˋ</rt>電<rt>ㄉㄧㄢˋ</rt>腦<rt>ㄋㄠˇ</rt>說<rt>ㄕㄨㄛ</rt>出<rt>ㄔㄨ</rt>你<rt>ㄋㄧˇ</rt>最<rt>ㄗㄨㄟˋ</rt>喜<rt>ㄒㄧˇ</rt>歡<rt>ㄏㄨㄢ</rt>這<rt>ㄓㄜˋ</rt>本<rt>ㄅㄣˇ</rt>書<rt>ㄕㄨ</rt>的<rt>˙ㄉㄜ</rt>哪<rt>ㄋㄚˇ</rt>裡<rt>ㄌㄧˇ</rt>！<rt></rt></ruby>
+                    </p>
+                  </div>
+                  <span id="voiceTimerBadge" class="pill-tag gold">⏱️ 00:00 (最長 45 秒)</span>
+                </div>
+
+                <div class="voice-btn-row">
+                  <button type="button" id="btnStartVoiceRec" class="voice-rec-btn" onclick="toggleJuniorVoiceRecording()">
+                    🔴 <ruby>點<rt>ㄉㄧㄢˇ</rt>這<rt>ㄓㄜˋ</rt>裡<rt>ㄌㄧˇ</rt>開<rt>ㄎㄞ</rt>始<rt>ㄕˇ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>說<rt>ㄕㄨㄛ</rt>故<rt>ㄍㄨˋ</rt>事<rt>ㄕˋ</rt></ruby>
+                  </button>
+                  <button type="button" id="btnClearVoiceRec" class="btn-outline" style="display:none;" onclick="clearJuniorVoiceRecording()">
+                    🗑️ <ruby>重<rt>ㄔㄨㄥˊ</rt>新<rt>ㄒㄧㄣ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt></ruby>
+                  </button>
+                </div>
+
+                <!-- 錄音完成後的播放器預覽 -->
+                <div id="voicePlaybackWrap" style="display:none; margin-top:0.75rem; background:#ffffff; padding:0.75rem; border-radius:14px; border:2px solid #84cc16; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                  <span style="font-size:0.88rem; font-weight:900; color:#15803d;">✅ <ruby>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>完<rt>ㄨㄢˊ</rt>成<rt>ㄔㄥˊ</rt>！<rt></rt>點<rt>ㄉㄧㄢˇ</rt>播<rt>ㄅㄛ</rt>放<rt>ㄈㄤˋ</rt>聽<rt>ㄊㄧㄥ</rt>聽<rt>ㄊㄧㄥ</rt>看<rt>ㄎㄢˋ</rt>：<rt></rt></ruby></span>
+                  <audio id="juniorAudioPreview" controls style="height:38px; flex:1; min-width:200px;"></audio>
+                </div>
+              </div>
+
+              <!-- 低年級一鍵造句按鈕（不用打字，點一下就填入心得！） -->
+              <div style="margin-top:0.85rem;">
+                <label style="font-size:0.88rem; font-weight:900; color:#365314; display:block; margin-bottom:0.4rem;">
+                  💬 <ruby>一<rt>ㄧˊ</rt>句<rt>ㄐㄩˋ</rt>話<rt>ㄏㄨㄚˋ</rt>小<rt>ㄒㄧㄠˇ</rt>心<rt>ㄒㄧㄣ</rt>得<rt>ㄉㄜˊ</rt>（<rt></rt>點<rt>ㄉㄧㄢˇ</rt>下<rt>ㄒㄧㄚˋ</rt>面<rt>˙ㄇㄧㄢ</rt>的<rt>˙ㄉㄜ</rt>句<rt>ㄐㄩˋ</rt>子<rt>˙ㄗ</rt>按<rt>ㄢˋ</rt>鈕<rt>ㄋㄧㄡˇ</rt>就<rt>ㄐㄧㄡˋ</rt>會<rt>ㄏㄨㄟˋ</rt>自<rt>ㄗˋ</rt>動<rt>ㄉㄨㄥˋ</rt>填<rt>ㄊㄧㄢˊ</rt>進<rt>ㄐㄧㄣˋ</rt>去<rt>ㄑㄩˋ</rt>喔<rt>ㄛ</rt>！<rt></rt>）<rt></rt></ruby>
+                </label>
+                <div class="quick-fill-chips" style="margin-bottom:0.6rem;">
+                  <span class="quick-chip" onclick="appendJuniorSentence('這本書的圖畫好漂亮，故事超級有趣！')">🎨 圖畫好漂亮，故事超有趣！</span>
+                  <span class="quick-chip" onclick="appendJuniorSentence('我最喜歡裡面的主角，因為他非常勇敢又善良！')">🦸‍♂️ 我最喜歡主角，他很勇敢！</span>
+                  <span class="quick-chip" onclick="appendJuniorSentence('讀完這本書，我學到了好多大自然與動物的新知識！')">🐾 我學到好多動物的新知識！</span>
+                  <span class="quick-chip" onclick="appendJuniorSentence('這本書讓我學會要愛護雙溪的大自然，也要幫助好朋友！')">💚 我要愛護大自然並幫助朋友！</span>
+                  <span class="quick-chip" onclick="appendJuniorSentence('故事好感人，我想推薦給班上的好朋友一起看！')">🌟 我想推薦給好朋友一起看！</span>
+                </div>
+
+                <textarea id="promptSummaryInput" rows="2" placeholder="點上面的句子按鈕，或錄音時會自動幫你把說的話變成文字喔！（如果已經有錄音，這裡不打字也可以直接送出！）" style="font-size:1rem; font-weight:700;"></textarea>
+                <!-- 隱藏中高年級的第二、三題，自動由系統合成，讓低年級只需填一格或錄音即可 -->
+                <textarea id="promptTakeawayInput" style="display:none;"></textarea>
+                <input type="text" id="promptQuoteInput" style="display:none;" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width:100%; font-size:1.18rem; padding:1.05rem;">
+              🚀 <ruby>完<rt>ㄨㄢˊ</rt>成<rt>ㄔㄥˊ</rt>看<rt>ㄎㄢˋ</rt>書<rt>ㄕㄨ</rt>打<rt>ㄉㄚˇ</rt>卡<rt>ㄎㄚˇ</rt>！<rt></rt>領<rt>ㄌㄧㄥˇ</rt>取<rt>ㄑㄩˇ</rt>能<rt>ㄋㄥˊ</rt>量<rt>ㄌㄧㄤˋ</rt>讓<rt>ㄖㄤˋ</rt>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt>長<rt>ㄓㄤˇ</rt>大<rt>ㄉㄚˋ</rt></ruby>
+            </button>
+          </form>
+        </div>
+
+        <!-- 右側：即時深度指標與經驗值獎勵預覽球 -->
+        <div>
+          <div class="live-preview-card">
+            <h3 style="font-size:1.15rem; font-weight:900; text-align:center; color:#365314; display:flex; align-items:center; justify-content:center; gap:0.4rem;">
+              <img src="./assets/images/school_logo.png" alt="" style="width:26px; height:26px; object-fit:contain;" />
+              <span><ruby>打<rt>ㄉㄚˇ</rt>卡<rt>ㄎㄚˇ</rt>獎<rt>ㄐㄧㄤˇ</rt>勵<rt>ㄌㄧˋ</rt>預<rt>ㄩˋ</rt>覽<rt>ㄌㄢˇ</rt>球<rt>ㄑㄧㄡˊ</rt></ruby></span>
+            </h3>
+            <p style="font-size:0.82rem; color:#4d7c0f; text-align:center; margin-top:0.25rem; font-weight:600;">
+              <ruby>有<rt>ㄧㄡˇ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>或<rt>ㄏㄨㄛˋ</rt>點<rt>ㄉㄧㄢˇ</rt>選<rt>ㄒㄩㄢˇ</rt>句<rt>ㄐㄩˋ</rt>子<rt>˙ㄗ</rt>，<rt></rt>會<rt>ㄏㄨㄟˋ</rt>得<rt>ㄉㄜˊ</rt>到<rt>ㄉㄠˋ</rt>超<rt>ㄔㄠ</rt>高<rt>ㄍㄠ</rt>分<rt>ㄈㄣ</rt>數<rt>ㄕㄨˋ</rt>喔<rt>ㄛ</rt>！<rt></rt></ruby>
+            </p>
+
+            <div class="preview-meter-circle">
+              <div id="liveDepthScore" class="score-num">88</div>
+              <div class="score-lbl">閱讀棒棒指數<br />(0~100)</div>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.88); border:2px solid #bef264; border-radius:16px; padding:1rem; margin-top:1rem; text-align:center;">
+              <div style="margin-bottom:0.45rem; font-size:0.95rem; color:#365314; font-weight:800;">
+                ⚡ <ruby>可<rt>ㄎㄜˇ</rt>獲<rt>ㄏㄨㄛˋ</rt>得<rt>ㄉㄜˊ</rt>能<rt>ㄋㄥˊ</rt>量<rt>ㄌㄧㄤˋ</rt></ruby>：<strong id="liveXpEstimate" style="color:#65a30d; font-size:1.25rem;">+210 XP</strong>
+              </div>
+              <div id="liveBreadthBonusRow" style="font-size:0.84rem; color:#15803d; font-weight:800; margin-bottom:0.3rem; text-align:center;">
+                🌟 跨領域廣度首讀獎勵：<span>+60 XP</span>
+              </div>
+              <div id="liveClassBonusRow" style="font-size:0.84rem; color:#b45309; font-weight:800; text-align:center;">
+                🐾 角色專精領域加成：<span>+30 XP</span>
+              </div>
+            </div>
+
+            <div style="margin-top:1rem; font-size:0.84rem; color:#3f6212; background:rgba(255,255,255,0.78); border:1.5px dashed #a3e635; padding:0.85rem; border-radius:14px; text-align:center;">
+              <strong style="display:block; margin-bottom:0.35rem;">💡 <ruby>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt>快<rt>ㄎㄨㄞˋ</rt>速<rt>ㄙㄨˋ</rt>長<rt>ㄓㄤˇ</rt>大<rt>ㄉㄚˋ</rt>小<rt>ㄒㄧㄠˇ</rt>祕<rt>ㄇㄧˋ</rt>訣<rt>ㄐㄩㄝˊ</rt></ruby></strong>
+              <div style="line-height:1.8;">
+                🎤 <strong><ruby>按<rt>ㄢˋ</rt>下<rt>ㄒㄧㄚˋ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>鈕<rt>ㄋㄧㄡˇ</rt></ruby></strong>說出感想，加送 <strong>+50 XP</strong>！<br />
+                🧭 看沒看過的新分類，加送 <strong>+60 XP</strong>！<br />
+                👑 累積滿 400 XP 就能解鎖下一個隱藏版角色！
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         TAB 3: 角色選擇與晉級圖鑑 (五種雙溪在地生物角色、Lv.1~Lv.6 六階段進化一覽)
+         ================================================================= -->
+    <section id="tab-classes" class="tab-section">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h3>🐾 <ruby>選<rt>ㄒㄩㄢˇ</rt>擇<rt>ㄗㄜˊ</rt>你<rt>ㄋㄧˇ</rt>最<rt>ㄗㄨㄟˋ</rt>喜<rt>ㄒㄧˇ</rt>歡<rt>ㄏㄨㄢ</rt>的<rt>˙ㄉㄜ</rt>雙<rt>ㄕㄨㄤ</rt>溪<rt>ㄒㄧ</rt>動<rt>ㄉㄨㄥˋ</rt>物<rt>ㄨˋ</rt>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt></ruby></h3>
+            <p class="panel-subtitle"><ruby>有<rt>ㄧㄡˇ</rt>甲<rt>ㄐㄧㄚˇ</rt>寶<rt>ㄅㄠˇ</rt>寶<rt>ㄅㄠˇ</rt>、<rt></rt>泡<rt>ㄆㄠˋ</rt>泡<rt>ㄆㄠˋ</rt>魚<rt>ㄩˊ</rt>、<rt></rt>芽<rt>ㄧㄚˊ</rt>芽<rt>ㄧㄚˊ</rt>羌<rt>ㄑㄧㄤ</rt>、<rt></rt>藍<rt>ㄌㄢˊ</rt>羽<rt>ㄩˇ</rt>仔<rt>ㄗˇ</rt>、<rt></rt>鷲<rt>ㄐㄧㄡˋ</rt>鷲<rt>ㄐㄧㄡˋ</rt>寶<rt>ㄅㄠˇ</rt>，<rt></rt>隨<rt>ㄙㄨㄟˊ</rt>時<rt>ㄕˊ</rt>可<rt>ㄎㄜˇ</rt>以<rt>ㄧˇ</rt>換<rt>ㄏㄨㄢˋ</rt>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt>喔<rt>ㄛ</rt>！<rt></rt></ruby></p>
+          </div>
+          <button id="btnJumpToWorkshop" class="btn-outline teacher-only-el" style="display:none;" onclick="switchTab('teacher')">🎨 前往替換 / 上傳自訂角色圖案</button>
+        </div>
+
+        <div id="classSelectorGrid" class="class-selector-grid"></div>
+
+        <div id="selectedClassDetailBox" style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 2px dashed #d9f99d;"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         TAB 4: 全校故事分享牆 (可聽同學的語音錄音、按讚、教師暖心評語)
+         ================================================================= -->
+    <section id="tab-wall" class="tab-section">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h3>💬 <ruby>全<rt>ㄑㄩㄢˊ</rt>校<rt>ㄒㄧㄠˋ</rt>故<rt>ㄍㄨˋ</rt>事<rt>ㄕˋ</rt>分<rt>ㄈㄣ</rt>享<rt>ㄒㄧㄤˇ</rt>牆<rt>ㄑㄧㄤˊ</rt>（<rt></rt>聽<rt>ㄊㄧㄥ</rt>聽<rt>ㄊㄧㄥ</rt>同<rt>ㄊㄨㄥˊ</rt>學<rt>ㄒㄩㄝˊ</rt>的<rt>˙ㄉㄜ</rt>錄<rt>ㄌㄨˋ</rt>音<rt>ㄧㄣ</rt>與<rt>ㄩˇ</rt>好<rt>ㄏㄠˇ</rt>書<rt>ㄕㄨ</rt>！<rt></rt>）<rt></rt></ruby></h3>
+            <p class="panel-subtitle"><ruby>點<rt>ㄉㄧㄢˇ</rt>播<rt>ㄅㄛ</rt>放<rt>ㄈㄤˋ</rt>鍵<rt>ㄐㄧㄢˋ</rt>可<rt>ㄎㄜˇ</rt>以<rt>ㄧˇ</rt>聽<rt>ㄊㄧㄥ</rt>同<rt>ㄊㄨㄥˊ</rt>學<rt>ㄒㄩㄝˊ</rt>說<rt>ㄕㄨㄛ</rt>故<rt>ㄍㄨˋ</rt>事<rt>ㄕˋ</rt>，<rt></rt>別<rt>ㄅㄧㄝˊ</rt>忘<rt>ㄨㄤˋ</rt>了<rt>˙ㄌㄜ</rt>幫<rt>ㄅㄤ</rt>好<rt>ㄏㄠˇ</rt>朋<rt>ㄆㄥˊ</rt>友<rt>ㄧㄡˇ</rt>按<rt>ㄢˋ</rt>個<rt>˙ㄍㄜ</rt>讚<rt>ㄗㄢˋ</rt>喔<rt>ㄛ</rt>！<rt></rt></ruby></p>
+          </div>
+          <div class="reviews-filter-bar" style="margin-bottom:0;">
+            <select id="wallCategoryFilter" style="width:auto;">
+              <option value="all">📚 全部八大領域</option>
+            </select>
+            <input type="text" id="wallSearchInput" placeholder="🔍 搜尋書名或同學名字..." style="width:220px;" />
+          </div>
+        </div>
+
+        <div id="reviewsWallGrid" class="reviews-wall-grid"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         TAB 5: 榮譽風雲榜 (班級榮譽榜 + 全校個人閱讀風雲榜)
+         ================================================================= -->
+    <section id="tab-leaderboard" class="tab-section">
+      <!-- 班級閱讀榮譽風雲榜 -->
+      <div class="panel-card" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <div>
+            <h3>🏫 <ruby>班<rt>ㄅㄢ</rt>級<rt>ㄐㄧˊ</rt>閱<rt>ㄩㄝˋ</rt>讀<rt>ㄉㄨˊ</rt>榮<rt>ㄖㄨㄥˊ</rt>譽<rt>ㄩˋ</rt>榜<rt>ㄅㄤˇ</rt>（<rt></rt>全<rt>ㄑㄩㄢˊ</rt>班<rt>ㄅㄢ</rt>一<rt>ㄧˋ</rt>起<rt>ㄑㄧˇ</rt>看<rt>ㄎㄢˋ</rt>書<rt>ㄕㄨ</rt>拿<rt>ㄋㄚˊ</rt>冠<rt>ㄍㄨㄢˋ</rt>軍<rt>ㄐㄩㄣ</rt>！<rt></rt>）<rt></rt></ruby></h3>
+            <p class="panel-subtitle">統計各班級累積閱讀總冊數、總頁數、參與人數與平均得分</p>
+          </div>
+        </div>
+        <div id="classRankGrid" class="class-rank-grid"></div>
+      </div>
+
+      <!-- 全校個人閱讀英雄風雲榜 -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h3>🏆 <ruby>全<rt>ㄑㄩㄢˊ</rt>校<rt>ㄒㄧㄠˋ</rt>閱<rt>ㄩㄝˋ</rt>讀<rt>ㄉㄨˊ</rt>小<rt>ㄒㄧㄠˇ</rt>達<rt>ㄉㄚˊ</rt>人<rt>ㄖㄣˊ</rt>風<rt>ㄈㄥ</rt>雲<rt>ㄩㄣˊ</rt>榜<rt>ㄅㄤˇ</rt></ruby></h3>
+            <p class="panel-subtitle">表揚愛看書、愛分享的閱讀小達人</p>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>名次</th>
+                <th>學生（班級 / 座號 / 姓名）</th>
+                <th>雙溪動物夥伴與稱號</th>
+                <th>等級 (XP)</th>
+                <th>累積閱讀量</th>
+                <th>探索星球</th>
+                <th>平均得分</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         TAB 6: 角色圖案工坊 & 教師管理面板 (僅教師可見)
+         ================================================================= -->
+    <section id="tab-teacher" class="tab-section">
+      <div class="panel-card" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <div>
+            <h3>🎨 角色圖案工坊 & 教師管理面板</h3>
+            <p class="panel-subtitle">支援「網頁直接上傳 / 貼上網址」或「直接將圖檔放入 public/assets/characters/ 資料夾」雙重替換機制，並可匯出全校閱讀紀錄 CSV</p>
+          </div>
+          <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+            <button id="btnResetDefaultImages" class="btn-outline">🔄 還原預設六階段角色圖案</button>
+            <button id="btnExportCsv" type="button" class="btn-gold">📊 匯出全校閱讀紀錄 CSV 報表</button>
+          </div>
+        </div>
+
+        <!-- ☁️ 方案 2：Google 試算表雲端資料庫連線設定面板（僅教師與管理者可見） -->
+        <div style="background:linear-gradient(135deg,#ecfccb 0%,#fef9c3 100%); border:2.5px solid #84cc16; padding:1.1rem 1.25rem; border-radius:18px; margin-bottom:1.1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.6rem;">
+            <h4 style="font-size:1.05rem; font-weight:900; color:#365314; display:flex; align-items:center; gap:0.45rem;">
+              <span>☁️ Google 試算表雲端資料庫連線設定（GitHub Pages 跨網同步全校紀錄）</span>
+            </h4>
+            <span id="cloudGasStatusBadge" class="pill-tag gold" style="background:#dcfce7; color:#15803d; border-color:#86efac;">✅ 已內建綁定雲端試算表網址</span>
+          </div>
+          <p style="font-size:0.82rem; color:#3f6212; margin-bottom:0.75rem; font-weight:600; line-height:1.5;">
+            已為您直接內建綁定上林國小專屬 Google 試算表雲端資料庫網址！全校親師生打開網頁即會自動連線並同步累積個人與全校閱讀紀錄：
+          </p>
+          <div style="display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center;">
+            <input type="text" id="cloudGasUrlInput" value="https://script.google.com/macros/s/AKfycbxWk2aAO4Vd7Jlb6iSZUqe_0_68OmC4L6Xe6GswB0nNZQT3aUn-AR15L7sGR7f10hXjcw/exec" placeholder="請貼上 Google Apps Script 網頁應用程式網址 (https://script.google.com/macros/s/.../exec)" style="flex:1; min-width:280px; background:#fff;" />
+            <button type="button" class="btn-primary" style="padding:0.65rem 1.1rem; font-size:0.86rem;" onclick="saveAndConnectCloudGas()">☁️ 儲存並重新連線</button>
+            <button type="button" class="btn-outline" style="padding:0.65rem 1rem; font-size:0.84rem;" onclick="pushCurrentStateToCloudGas()">📤 將目前資料初始化寫入雲端</button>
+          </div>
+        </div>
+
+        <div style="background:#f7fee7; border:2px solid #bef264; padding:1rem 1.15rem; border-radius:18px; margin-bottom:1.1rem;">
+          <div style="display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap; margin-bottom:0.85rem;">
+            <div style="flex:1; min-width:260px;">
+              <label for="workshopClassSelect" style="font-weight:900; color:#365314; display:block; margin-bottom:0.35rem;">1️⃣ 選擇要管理 Stage 1 ~ Stage 6 圖案的雙溪生物角色：</label>
+              <select id="workshopClassSelect" onchange="selectWorkshopCharacter(this.value)">
+                <option value="pangolin" selected>🐾 甲寶寶（穿山甲・森林守護）</option>
+                <option value="fish">🐟 泡泡魚（豆仔魚・溪流躍動）</option>
+                <option value="muntjac">🦌 芽芽羌（山羌・山林敏捷）</option>
+                <option value="magpie">🐦 藍羽仔（台灣藍鵲・長尾翩翩）</option>
+                <option value="eagle">🦅 鷲鷲寶（大冠鷲・傲視天際）</option>
+              </select>
+            </div>
+            <div style="flex:1; min-width:280px;">
+              <label style="font-weight:900; color:#4d7c0f; display:block; margin-bottom:0.35rem;">⚡ 快速批次上傳（可一次框選多張 PNG/JPG/SVG/GIF/WebP 圖檔自動配對 Stage 1~6）：</label>
+              <input type="file" accept="image/*" multiple onchange="handleBatchFilesUpload(this)" style="background:#fff; padding:0.45rem; border-radius:12px; border:2px dashed #84cc16; width:100%;" />
+            </div>
+          </div>
+
+          <div id="workshopCharacterTabs" class="workshop-char-tabs">
+            <button type="button" class="workshop-char-btn active" data-cid="pangolin" onclick="selectWorkshopCharacter('pangolin')">🐾 甲寶寶（穿山甲）</button>
+            <button type="button" class="workshop-char-btn" data-cid="fish" onclick="selectWorkshopCharacter('fish')">🐟 泡泡魚（豆仔魚）</button>
+            <button type="button" class="workshop-char-btn" data-cid="muntjac" onclick="selectWorkshopCharacter('muntjac')">🦌 芽芽羌（山羌）</button>
+            <button type="button" class="workshop-char-btn" data-cid="magpie" onclick="selectWorkshopCharacter('magpie')">🐦 藍羽仔（台灣藍鵲）</button>
+            <button type="button" class="workshop-char-btn" data-cid="eagle" onclick="selectWorkshopCharacter('eagle')">🦅 鷲鷲寶（大冠鷲）</button>
+          </div>
+        </div>
+
+        <div id="workshopStageSlots" class="stage-upload-grid"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 角色晉級慶祝彈窗 (Level-Up & Stage Promotion Modal) -->
+  <div id="promotionModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div style="font-size:0.9rem; font-weight:900; color:#65a30d; letter-spacing:1px; display:flex; align-items:center; justify-content:center; gap:0.4rem;">
+        <img src="./assets/images/school_logo.png" alt="" style="width:22px; height:22px; object-fit:contain;" />
+        <span>CONGRATULATIONS 閱讀能量突破</span>
+        <img src="./assets/images/school_logo.png" alt="" style="width:22px; height:22px; object-fit:contain;" />
+      </div>
+      <h2 id="promoModalTitle" style="font-size:1.65rem; font-weight:900; color:#365314; margin:0.4rem 0;">🎉 恭喜角色華麗晉級！</h2>
+      <p id="promoModalSubtitle" style="color:#4d7c0f; font-size:0.92rem; margin-bottom:1rem; font-weight:600;"></p>
+      <div style="width:220px; height:220px; margin:0 auto 1rem; border-radius:26px; padding:0; overflow:hidden; background:#fff; border:4px solid #65a30d; box-shadow:0 10px 24px rgba(101,163,13,0.28);">
+        <img id="promoModalImg" src="" alt="晉級新外貌" style="width:100%; height:100%; object-fit:cover; display:block;" />
+      </div>
+      <div id="promoModalBonusBox" style="background:#f7fee7; border:2px solid #bef264; border-radius:14px; padding:0.75rem; margin-bottom:1.25rem; font-size:0.88rem; color:#365314; font-weight:800;"></div>
+      <button class="btn-primary" onclick="closePromotionModal()" style="width:100%;">🌟 太棒了！繼續閱讀探索</button>
+    </div>
+  </div>
+
+  <!-- 身分選擇與帳號登錄彈窗 -->
+  <div id="loginModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-card" style="text-align:left; max-width:560px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.85rem;">
+        <h3 style="font-size:1.3rem; font-weight:900; color:#365314;">🔑 <ruby>我<rt>ㄨㄛˇ</rt>是<rt>ㄕˋ</rt>誰<rt>ㄕㄟˊ</rt>？<rt></rt>選<rt>ㄒㄩㄢˇ</rt>擇<rt>ㄗㄜˊ</rt>班<rt>ㄅㄢ</rt>級<rt>ㄐㄧˊ</rt>與<rt>ㄩˇ</rt>名<rt>ㄇㄧㄥˊ</rt>字<rt>ㄗˋ</rt></ruby></h3>
+        <button type="button" class="btn-outline" onclick="closeLoginModal()">✕ 關閉</button>
+      </div>
+
+      <!-- 身分切換按鈕 -->
+      <div class="identity-mode-tabs">
+        <button type="button" id="tabBtnStudentMode" class="identity-tab-btn active" onclick="switchLoginIdentityMode('student')">
+          🎒 <ruby>我<rt>ㄨㄛˇ</rt>是<rt>ㄕˋ</rt>學<rt>ㄒㄩㄝˊ</rt>生<rt>ㄕㄥ</rt></ruby>（班級、座號、姓名）
+        </button>
+        <button type="button" id="tabBtnTeacherMode" class="identity-tab-btn" onclick="switchLoginIdentityMode('teacher')">
+          👩‍🏫 教師與管理者端登錄
+        </button>
+      </div>
+
+      <!-- 學生端登錄表單 -->
+      <form id="studentLoginForm" style="margin-top:1rem;">
+        <p style="font-size:0.85rem; color:#4d7c0f; margin-bottom:0.85rem; font-weight:600;">
+          <ruby>請<rt>ㄑㄧㄥˇ</rt>填<rt>ㄊㄧㄢˊ</rt>寫<rt>ㄒㄧㄝˇ</rt>班<rt>ㄅㄢ</rt>級<rt>ㄐㄧˊ</rt>、<rt></rt>座<rt>ㄗㄨㄛˋ</rt>號<rt>ㄏㄠˋ</rt>、<rt></rt>姓<rt>ㄒㄧㄥˋ</rt>名<rt>ㄇㄧㄥˊ</rt>（<rt></rt>或<rt>ㄏㄨㄛˋ</rt>點<rt>ㄉㄧㄢˇ</rt>選<rt>ㄒㄩㄢˇ</rt>下<rt>ㄒㄧㄚˋ</rt>方<rt>ㄈㄤ</rt>名<rt>ㄇㄧㄥˊ</rt>字<rt>ㄗˋ</rt>）<rt></rt>：<rt></rt></ruby>
+        </p>
+        <div class="quick-fill-chips" style="margin-bottom:0.9rem;">
+          <span class="quick-chip" onclick="quickFillStudentLogin('一年忠班','01','小安','pangolin')">⚡ 一年忠班 01號 小安</span>
+          <span class="quick-chip" onclick="quickFillStudentLogin('二年忠班','03','小樂','fish')">⚡ 二年忠班 03號 小樂</span>
+          <span class="quick-chip" onclick="quickFillStudentLogin('四年忠班','01','林小星','pangolin')">⚡ 四年忠班 01號 林小星</span>
+          <span class="quick-chip" onclick="quickFillStudentLogin('四年忠班','02','陳溪游','fish')">⚡ 四年忠班 02號 陳溪游</span>
+          <span class="quick-chip" onclick="quickFillStudentLogin('三年愛班','12','李天翔','eagle')">⚡ 三年愛班 12號 李天翔</span>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="stuGradeInput">🏫 <ruby>班<rt>ㄅㄢ</rt>級<rt>ㄐㄧˊ</rt></ruby> *</label>
+            <input type="text" id="stuGradeInput" required value="一年忠班" placeholder="如：一年忠班" />
+          </div>
+          <div class="form-group">
+            <label for="stuSeatInput">🔢 <ruby>座<rt>ㄗㄨㄛˋ</rt>號<rt>ㄏㄠˋ</rt></ruby> *</label>
+            <input type="text" id="stuSeatInput" required value="01" placeholder="如：01" />
+          </div>
+          <div class="form-group">
+            <label for="stuNameInput">🧒 <ruby>我<rt>ㄨㄛˇ</rt>的<rt>˙ㄉㄜ</rt>名<rt>ㄇㄧㄥˊ</rt>字<rt>ㄗˋ</rt></ruby> *</label>
+            <input type="text" id="stuNameInput" required value="林小星" placeholder="請輸入姓名" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="stuClassSelect">🐾 <ruby>選<rt>ㄒㄩㄢˇ</rt>擇<rt>ㄗㄜˊ</rt>我<rt>ㄨㄛˇ</rt>的<rt>˙ㄉㄜ</rt>雙<rt>ㄕㄨㄤ</rt>溪<rt>ㄒㄧ</rt>動<rt>ㄉㄨㄥˋ</rt>物<rt>ㄨˋ</rt>夥<rt>ㄏㄨㄛˇ</rt>伴<rt>ㄅㄢˋ</rt></ruby> *</label>
+          <select id="stuClassSelect">
+            <option value="pangolin" selected>🐾 甲寶寶（穿山甲）</option>
+            <option value="fish">🐟 泡泡魚（豆仔魚）</option>
+            <option value="muntjac">🦌 芽芽羌（山羌）</option>
+            <option value="magpie">🐦 藍羽仔（台灣藍鵲）</option>
+            <option value="eagle">🦅 鷲鷲寶（大冠鷲）</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%;">🚀 <ruby>進<rt>ㄐㄧㄣˋ</rt>入<rt>ㄖㄨˋ</rt>上<rt>ㄕㄤˋ</rt>林<rt>ㄌㄧㄣˊ</rt>閱<rt>ㄩㄝˋ</rt>讀<rt>ㄉㄨˊ</rt>生<rt>ㄕㄥ</rt>態<rt>ㄊㄞˋ</rt>系<rt>ㄒㄧˋ</rt></ruby></button>
+      </form>
+
+      <!-- 教師與管理者端登錄表單 -->
+      <form id="teacherLoginForm" style="display:none; margin-top:1rem;">
+        <p style="font-size:0.85rem; color:#4d7c0f; margin-bottom:0.85rem; font-weight:600;">
+          請選擇您的<strong>管理者或教師身分職稱</strong>，登入後可於書評星牆聽取學生錄音、撰寫師長講評、管理角色圖片與匯出全校 CSV 報表：
+        </p>
+
+        <div class="form-group">
+          <label for="teacherRoleSelect">🎖️ 選擇教師 / 管理者身分 *</label>
+          <select id="teacherRoleSelect" required>
+            <option value="管理者校長">👑 管理者校長</option>
+            <option value="管理者閱推教師" selected>📚 管理者閱推教師</option>
+            <option value="管理者教務處主任">🏛️ 管理者教務處主任</option>
+            <option value="管理者教學組長">📋 管理者教學組長</option>
+            <option value="教師">👩‍🏫 教師（班級導師 / 科任教師）</option>
+          </select>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="teacherNameInput">✒️ 師長顯示稱呼（可自訂）</label>
+            <input type="text" id="teacherNameInput" value="管理者閱推教師" placeholder="例如：王校長、陳老師..." />
+          </div>
+          <div class="form-group">
+            <label for="teacherCodeInput">🔑 快速代碼（選填，如 teacher）</label>
+            <input type="text" id="teacherCodeInput" value="teacher" placeholder="預設 teacher" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-gold" style="width:100%; font-size:0.98rem; padding:0.85rem;">🌟 以師長管理者身分登錄系統</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 上林師生團體照放大檢視彈窗 -->
+  <div id="groupPhotoModal" class="modal-backdrop" role="dialog" aria-modal="true" onclick="closeGroupPhotoModal()">
+    <div class="modal-card" style="max-width:860px; padding:1.25rem;" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+        <h3 style="font-size:1.2rem; font-weight:900; color:#365314; display:flex; align-items:center; gap:0.5rem;">
+          <img src="./assets/images/school_logo.png" alt="" style="width:28px; height:28px; object-fit:contain;" />
+          <span>我們的美好上林・健康 × 美德 × 閱讀</span>
+        </h3>
+        <button type="button" class="btn-outline" onclick="closeGroupPhotoModal()">✕ 關閉</button>
+      </div>
+      <img src="./assets/images/group_photo.jpg" alt="上林國小師生團體照" style="width:100%; height:auto; border-radius:18px; border:3px solid #84cc16; display:block;" />
+    </div>
+  </div>
+
+  <!-- 上林閱讀生態系 專屬 QR Code 海報產生與下載彈窗 -->
+  <div id="qrCodeModal" class="modal-backdrop" role="dialog" aria-modal="true" onclick="closeQrCodeModal()">
+    <div class="modal-card" style="max-width:540px; padding:1.35rem;" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+        <h3 style="font-size:1.2rem; font-weight:900; color:#365314; display:flex; align-items:center; gap:0.5rem;">
+          <img src="./assets/images/school_logo.png" alt="" style="width:28px; height:28px; object-fit:contain;" />
+          <span>上林閱讀生態系・專屬 QR Code 海報</span>
+        </h3>
+        <button type="button" class="btn-outline" onclick="closeQrCodeModal()">✕ 關閉</button>
+      </div>
+      <div style="margin-bottom:0.75rem; text-align:left;">
+        <label for="qrTargetUrlInput" style="font-size:0.8rem; font-weight:800; color:#365314; display:block; margin-bottom:0.25rem;">🔗 掃描後前往的網址（預設自動帶入本網頁網址，亦可自由修改）：</label>
+        <div style="display:flex; gap:0.45rem;">
+          <input type="text" id="qrTargetUrlInput" placeholder="https://..." style="padding:0.45rem 0.7rem; font-size:0.82rem;" />
+          <button type="button" class="btn-primary" style="padding:0.45rem 0.85rem; font-size:0.8rem;" onclick="regenerateQrPosterInModal()">🔄 更新海報</button>
+        </div>
+      </div>
+      <div style="background:#f7fee7; border:2px solid #bef264; border-radius:20px; padding:0.75rem; margin-bottom:0.85rem;">
+        <img id="qrPosterPreviewImg" src="./assets/images/qrcode_poster.png" alt="上林閱讀生態系 QR Code 海報" style="width:100%; max-width:380px; height:auto; border-radius:14px; margin:0 auto; display:block; box-shadow:0 6px 18px rgba(101,163,13,0.2);" />
+      </div>
+      <div style="display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap;">
+        <a id="btnDownloadQrPoster" href="./assets/images/qrcode_poster.png" download="上林閱讀生態系_QRCode海報.png" class="btn-primary" style="text-decoration:none; flex:1;">💾 下載高畫質 QR Code 海報</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

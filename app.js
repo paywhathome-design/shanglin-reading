@@ -548,6 +548,80 @@ function renderRolePermissions() {
   }
 }
 
+// 將頁面上所有 <ruby>字<rt>ㄗˋ</rt></ruby> 自動轉換為「每個國字右方直排注音」結構，符合台灣國小低年級課本閱讀習慣且清晰不重疊
+function convertAllRubyToRightSideZhuyin() {
+  document.querySelectorAll("ruby").forEach(rubyEl => {
+    if (rubyEl.dataset.zyConverted === "1") return;
+    const children = Array.from(rubyEl.childNodes);
+    const frag = document.createDocumentFragment();
+    let currentChar = "";
+
+    children.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        currentChar += node.textContent;
+      } else if (node.nodeName === "RT") {
+        const py = (node.textContent || "").trim();
+        const ch = currentChar;
+        currentChar = "";
+        if (!py) {
+          frag.appendChild(document.createTextNode(ch));
+        } else {
+          const wrap = document.createElement("span");
+          wrap.className = "zy-w";
+
+          const cSpan = document.createElement("span");
+          cSpan.className = "zy-c";
+          cSpan.textContent = ch;
+          wrap.appendChild(cSpan);
+
+          let hasLightTone = false;
+          let toneMark = "";
+          const bopomofoChars = [];
+          for (const c of py) {
+            if (c === "˙") hasLightTone = true;
+            else if (c === "ˊ" || c === "ˇ" || c === "ˋ") toneMark = c;
+            else bopomofoChars.push(c);
+          }
+
+          const pSpan = document.createElement("span");
+          pSpan.className = "zy-p";
+          if (hasLightTone) {
+            const lSpan = document.createElement("span");
+            lSpan.className = "zy-light";
+            lSpan.textContent = "˙";
+            pSpan.appendChild(lSpan);
+          }
+          const bSpan = document.createElement("span");
+          bSpan.className = "zy-b";
+          bopomofoChars.forEach(bc => {
+            const iEl = document.createElement("i");
+            iEl.textContent = bc;
+            bSpan.appendChild(iEl);
+          });
+          pSpan.appendChild(bSpan);
+
+          if (toneMark) {
+            const tSpan = document.createElement("span");
+            tSpan.className = "zy-t";
+            tSpan.textContent = toneMark;
+            pSpan.appendChild(tSpan);
+          }
+          wrap.appendChild(pSpan);
+          frag.appendChild(wrap);
+        }
+      }
+    });
+
+    if (currentChar) {
+      frag.appendChild(document.createTextNode(currentChar));
+    }
+
+    rubyEl.innerHTML = "";
+    rubyEl.appendChild(frag);
+    rubyEl.dataset.zyConverted = "1";
+  });
+}
+
 function renderAll() {
   const tasks = [
     renderRolePermissions,
@@ -559,7 +633,8 @@ function renderAll() {
     renderClassSelectorTab,
     renderReviewsWall,
     renderLeaderboard,
-    renderTeacherWorkshop
+    renderTeacherWorkshop,
+    convertAllRubyToRightSideZhuyin
   ];
   tasks.forEach(fn => {
     try {
@@ -874,18 +949,20 @@ window.toggleMoodTag = function(tag) {
 function updateLiveQuestPreview() {
   const student = getCurrentStudent();
   if (!student) return;
-  const pages = Math.max(10, Number(document.getElementById("bookPagesInput").value) || 100);
+  const isJunior = document.body.classList.contains("junior-mode");
+  const pages = Math.max(10, Number(document.getElementById("bookPagesInput").value) || 32);
   const difficulty = Number(document.getElementById("bookDifficultySelect").value) || 3;
   const category = document.getElementById("bookCategorySelect").value || "literature";
   const s1 = document.getElementById("promptSummaryInput").value.trim();
   const s2 = document.getElementById("promptTakeawayInput").value.trim();
   const s3 = document.getElementById("promptQuoteInput").value.trim();
 
-  const combinedLen = s1.length + s2.length + s3.length;
-  const pageFactor = Math.min(35, Math.floor(pages / 12));
+  const hasAudio = Boolean(window.juniorRecordedAudioDataUrl);
+  const combinedLen = s1.length + s2.length + s3.length + (hasAudio ? 80 : 0);
+  const pageFactor = isJunior ? Math.min(35, Math.floor(pages / 3) + 15) : Math.min(35, Math.floor(pages / 12));
   const diffFactor = difficulty * 7;
-  const textFactor = Math.min(30, Math.floor(combinedLen / 4));
-  const depthScore = Math.min(100, Math.max(35, pageFactor + diffFactor + textFactor));
+  const textFactor = Math.min(35, Math.floor(combinedLen / 3));
+  const depthScore = Math.min(100, Math.max(isJunior ? 78 : 35, pageFactor + diffFactor + textFactor));
 
   const myReviews = appState.reviews.filter(r => r.studentId === student.id);
   const isNewCategory = !myReviews.some(r => r.category === category);
@@ -893,15 +970,16 @@ function updateLiveQuestPreview() {
 
   const charClass = appState.classes.find(c => c.id === student.classId);
   const classBonus = (charClass && charClass.bonusCategory === category) ? 30 : 0;
+  const voiceBonus = hasAudio ? 50 : 0;
 
-  const xpEarned = 80 + Math.min(150, Math.floor(pages / 3)) + (difficulty * 15) + Math.floor(depthScore * 0.6) + breadthBonus + classBonus;
+  const xpEarned = 80 + Math.min(150, Math.floor(pages / 3)) + (difficulty * 15) + Math.floor(depthScore * 0.6) + breadthBonus + classBonus + voiceBonus;
 
   document.getElementById("liveDepthScore").textContent = depthScore;
   document.getElementById("liveXpEstimate").textContent = `+${xpEarned} XP`;
   document.getElementById("liveBreadthBonusRow").style.opacity = isNewCategory ? "1" : "0.35";
   document.getElementById("liveBreadthBonusRow").innerHTML = `🌟 跨領域廣度首讀獎勵：<span>${isNewCategory ? "+60 XP (新領域!)" : "+0 XP (已讀過)"}</span>`;
-  document.getElementById("liveClassBonusRow").style.opacity = classBonus > 0 ? "1" : "0.35";
-  document.getElementById("liveClassBonusRow").innerHTML = `🐾 角色專精領域加成：<span>${classBonus > 0 ? "+30 XP (角色專精!)" : "+0 XP"}</span>`;
+  document.getElementById("liveClassBonusRow").style.opacity = (classBonus > 0 || voiceBonus > 0) ? "1" : "0.35";
+  document.getElementById("liveClassBonusRow").innerHTML = `🐾 專精與錄音獎勵加成：<span>+${classBonus + voiceBonus} XP${voiceBonus > 0 ? " (含錄音+50!)" : ""}</span>`;
 }
 
 // ============================================================================
@@ -1047,6 +1125,13 @@ function renderReviewsWall() {
           <div style="display:flex; gap:0.35rem; flex-wrap:wrap; margin:0.65rem 0;">${moodHtml}</div>
 
           <div class="review-body-text">${escapeHtml(r.reviewText)}</div>
+
+          ${r.audioData ? `
+            <div class="review-audio-box">
+              <span style="font-size:0.8rem; font-weight:900; color:#365314;">🎙️ 小小說書人語音分享：</span>
+              <audio controls src="${r.audioData}" style="height:34px; flex:1; min-width:180px;"></audio>
+            </div>
+          ` : ""}
 
           ${r.teacherComment ? `
             <div class="teacher-reply-box" style="margin-top:0.65rem;">
@@ -1524,6 +1609,112 @@ window.closeGroupPhotoModal = function() {
   if (modal) modal.classList.remove("show");
 };
 
+window.openQrCodeModal = function() {
+  const modal = document.getElementById("qrCodeModal");
+  const urlInput = document.getElementById("qrTargetUrlInput");
+  if (urlInput && !urlInput.value) {
+    urlInput.value = "https://paywhathome-design.github.io/shanglin-reading/";
+  }
+  if (modal) modal.classList.add("show");
+};
+
+window.closeQrCodeModal = function() {
+  const modal = document.getElementById("qrCodeModal");
+  if (modal) modal.classList.remove("show");
+};
+
+window.regenerateQrPosterInModal = function() {
+  const urlInput = document.getElementById("qrTargetUrlInput");
+  const targetUrl = (urlInput && urlInput.value.trim()) ? urlInput.value.trim() : window.location.href;
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&ecc=H&color=365314&bgcolor=ffffff&data=${encodeURIComponent(targetUrl)}`;
+
+  const qrImg = new Image();
+  qrImg.crossOrigin = "anonymous";
+  qrImg.onload = function() {
+    const logoImg = new Image();
+    logoImg.crossOrigin = "anonymous";
+    logoImg.onload = function() {
+      const canvas = document.createElement("canvas");
+      canvas.width = 900;
+      canvas.height = 1120;
+      const ctx = canvas.getContext("2d");
+
+      // 背景漸層
+      const bgGrad = ctx.createLinearGradient(0, 0, 900, 1120);
+      bgGrad.addColorStop(0, "#fef9c3");
+      bgGrad.addColorStop(1, "#d9f99d");
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 900, 1120);
+
+      // 頂部橫幅「上林閱讀生態系」
+      const banGrad = ctx.createLinearGradient(70, 60, 830, 215);
+      banGrad.addColorStop(0, "#65a30d");
+      banGrad.addColorStop(1, "#84cc16");
+      ctx.fillStyle = banGrad;
+      ctx.beginPath();
+      ctx.roundRect(70, 60, 760, 155, 32);
+      ctx.fill();
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = "#ffffff";
+      ctx.stroke();
+
+      // 橫幅左側校徽
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.roundRect(100, 80, 112, 112, 24);
+      ctx.fill();
+      ctx.drawImage(logoImg, 108, 88, 96, 96);
+
+      // 橫幅文字
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 52px 'Microsoft JhengHei', sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("上林閱讀生態系", 235, 138);
+      ctx.fillStyle = "#fef08a";
+      ctx.font = "bold 20px 'Microsoft JhengHei', sans-serif";
+      ctx.fillText("雙溪五大生態角色養成 × 八大知識廣度 × 引導式書評", 238, 178);
+
+      // 中央白色 QR 卡片外框
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.roundRect(110, 250, 680, 680, 36);
+      ctx.fill();
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = "#a3e635";
+      ctx.stroke();
+
+      ctx.drawImage(qrImg, 145, 285, 610, 610);
+
+      // QR 中央上林國小校徽
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.roundRect(380, 520, 140, 140, 24);
+      ctx.fill();
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = "#84cc16";
+      ctx.stroke();
+      ctx.drawImage(logoImg, 392, 532, 116, 116);
+
+      // 底部說明文字
+      ctx.fillStyle = "#365314";
+      ctx.font = "bold 26px 'Microsoft JhengHei', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("★ 請用平板或手機相機掃描，立即展開閱讀冒險！ ★", 450, 995);
+      ctx.fillStyle = "#4d7c0f";
+      ctx.font = "bold 16px 'Microsoft JhengHei', sans-serif";
+      ctx.fillText(targetUrl, 450, 1045);
+
+      const dataUrl = canvas.toDataURL("image/png");
+      const previewEl = document.getElementById("qrPosterPreviewImg");
+      const dlBtn = document.getElementById("btnDownloadQrPoster");
+      if (previewEl) previewEl.src = dataUrl;
+      if (dlBtn) dlBtn.href = dataUrl;
+    };
+    logoImg.src = "./assets/images/school_logo.png";
+  };
+  qrImg.src = qrApiUrl;
+};
+
 function escapeHtml(str) {
   return String(str || "")
     .replace(/&/g, "&amp;")
@@ -1531,6 +1722,202 @@ function escapeHtml(str) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
+
+// ============================================================================
+// index4 低年級注音語音版專屬互動：點選繪本、點選厚度/笑臉、語音錄音 (MediaRecorder) 與語音辨識轉文字
+// ============================================================================
+window.juniorRecordedAudioDataUrl = "";
+let juniorMediaRecorder = null;
+let juniorAudioChunks = [];
+let juniorRecTimerInterval = null;
+let juniorRecSeconds = 0;
+let juniorSpeechRec = null;
+
+window.juniorQuickPickBook = function(title, categoryId, pages) {
+  const titleEl = document.getElementById("bookTitleInput");
+  const catEl = document.getElementById("bookCategorySelect");
+  const pagesEl = document.getElementById("bookPagesInput");
+  if (titleEl) titleEl.value = title;
+  if (catEl && categoryId) catEl.value = categoryId;
+  if (pagesEl && pages) pagesEl.value = pages;
+  updateLiveQuestPreview();
+};
+
+window.selectJuniorBookThickness = function(pages, diff, btnEl) {
+  const pagesEl = document.getElementById("bookPagesInput");
+  const diffEl = document.getElementById("bookDifficultySelect");
+  if (pagesEl) pagesEl.value = pages;
+  if (diffEl) diffEl.value = String(diff);
+  document.querySelectorAll(".thick-btn").forEach(b => b.classList.remove("active"));
+  if (btnEl) btnEl.classList.add("active");
+  updateLiveQuestPreview();
+};
+
+window.selectJuniorRating = function(stars, btnEl) {
+  const rateEl = document.getElementById("bookRatingSelect");
+  if (rateEl) rateEl.value = String(stars);
+  document.querySelectorAll(".rate-face-btn").forEach(b => b.classList.remove("active"));
+  if (btnEl) btnEl.classList.add("active");
+};
+
+window.appendJuniorSentence = function(sentence) {
+  const sumEl = document.getElementById("promptSummaryInput");
+  if (!sumEl) return;
+  const cur = sumEl.value.trim();
+  sumEl.value = cur ? `${cur} ${sentence}` : sentence;
+  updateLiveQuestPreview();
+};
+
+window.startSpeechToText = function(targetInputId) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert("您的瀏覽器目前不支援語音轉文字，可直接點選上方的繪本名稱或由家長協助輸入喔！");
+    return;
+  }
+  const rec = new SpeechRecognition();
+  rec.lang = "zh-TW";
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  const targetEl = document.getElementById(targetInputId);
+  const oldPlaceholder = targetEl ? targetEl.placeholder : "";
+  if (targetEl) targetEl.placeholder = "🎙️ 請說話，正在聽你念書名...";
+  rec.onresult = function(event) {
+    const transcript = event.results[0][0].transcript.replace(/[。，！？]/g, "").trim();
+    if (targetEl && transcript) {
+      targetEl.value = transcript;
+      updateLiveQuestPreview();
+    }
+  };
+  rec.onerror = function() {
+    if (targetEl) targetEl.placeholder = oldPlaceholder;
+  };
+  rec.onend = function() {
+    if (targetEl) targetEl.placeholder = oldPlaceholder;
+  };
+  rec.start();
+};
+
+window.toggleJuniorVoiceRecording = async function() {
+  const btn = document.getElementById("btnStartVoiceRec");
+  const timerBadge = document.getElementById("voiceTimerBadge");
+
+  // 若正在錄音中，點擊則停止錄音
+  if (juniorMediaRecorder && juniorMediaRecorder.state === "recording") {
+    juniorMediaRecorder.stop();
+    if (juniorSpeechRec) {
+      try { juniorSpeechRec.stop(); } catch (e) {}
+    }
+    return;
+  }
+
+  // 啟動麥克風錄音
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert("找不到麥克風裝置，或瀏覽器未允許麥克風權限。您也可以直接點選下方的「一句話小小心得」按鈕完成打卡喔！");
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    juniorAudioChunks = [];
+    const options = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+      ? { mimeType: "audio/webm;codecs=opus", audioBitsPerSecond: 16000 }
+      : {};
+    juniorMediaRecorder = new MediaRecorder(stream, options);
+
+    juniorMediaRecorder.ondataavailable = function(e) {
+      if (e.data && e.data.size > 0) juniorAudioChunks.push(e.data);
+    };
+
+    juniorMediaRecorder.onstop = function() {
+      clearInterval(juniorRecTimerInterval);
+      stream.getTracks().forEach(t => t.stop());
+
+      const blob = new Blob(juniorAudioChunks, { type: juniorMediaRecorder.mimeType || "audio/webm" });
+      const reader = new FileReader();
+      reader.onloadend = function() {
+        window.juniorRecordedAudioDataUrl = reader.result;
+        const previewWrap = document.getElementById("voicePlaybackWrap");
+        const audioEl = document.getElementById("juniorAudioPreview");
+        const clearBtn = document.getElementById("btnClearVoiceRec");
+        if (audioEl) audioEl.src = window.juniorRecordedAudioDataUrl;
+        if (previewWrap) previewWrap.style.display = "flex";
+        if (clearBtn) clearBtn.style.display = "inline-flex";
+        updateLiveQuestPreview();
+      };
+      reader.readAsDataURL(blob);
+
+      if (btn) {
+        btn.classList.remove("recording");
+        btn.innerHTML = `🔴 錄音已完成！（可點此重新錄音）`;
+      }
+    };
+
+    juniorMediaRecorder.start();
+    juniorRecSeconds = 0;
+    if (btn) {
+      btn.classList.add("recording");
+      btn.innerHTML = `⏹️ 正在錄音中... 說完請點這裡停止`;
+    }
+    if (timerBadge) timerBadge.textContent = `🔴 錄音中 00:00`;
+
+    juniorRecTimerInterval = setInterval(() => {
+      juniorRecSeconds++;
+      const secStr = String(juniorRecSeconds).padStart(2, "0");
+      if (timerBadge) timerBadge.textContent = `🔴 錄音中 00:${secStr}`;
+      // 最長錄音 45 秒自動停止，確保雲端試算表同步流暢
+      if (juniorRecSeconds >= 45 && juniorMediaRecorder && juniorMediaRecorder.state === "recording") {
+        juniorMediaRecorder.stop();
+      }
+    }, 1000);
+
+    // 同步啟動語音轉文字（若瀏覽器支援，邊錄音邊幫低年級孩子把說的話轉成文字填入心得欄！）
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      try {
+        juniorSpeechRec = new SpeechRecognition();
+        juniorSpeechRec.lang = "zh-TW";
+        juniorSpeechRec.continuous = true;
+        juniorSpeechRec.interimResults = false;
+        juniorSpeechRec.onresult = function(event) {
+          let spoken = "";
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              spoken += event.results[i][0].transcript;
+            }
+          }
+          if (spoken.trim()) {
+            const sumEl = document.getElementById("promptSummaryInput");
+            if (sumEl) {
+              sumEl.value = (sumEl.value ? sumEl.value + " " : "") + spoken.trim();
+              updateLiveQuestPreview();
+            }
+          }
+        };
+        juniorSpeechRec.start();
+      } catch (ignore) {}
+    }
+  } catch (err) {
+    alert("無法開啟麥克風（請在瀏覽器網址列左側允許麥克風權限）：" + err.message);
+  }
+};
+
+window.clearJuniorVoiceRecording = function() {
+  window.juniorRecordedAudioDataUrl = "";
+  const previewWrap = document.getElementById("voicePlaybackWrap");
+  const audioEl = document.getElementById("juniorAudioPreview");
+  const clearBtn = document.getElementById("btnClearVoiceRec");
+  const btn = document.getElementById("btnStartVoiceRec");
+  const timerBadge = document.getElementById("voiceTimerBadge");
+  if (audioEl) audioEl.src = "";
+  if (previewWrap) previewWrap.style.display = "none";
+  if (clearBtn) clearBtn.style.display = "none";
+  if (timerBadge) timerBadge.textContent = "⏱️ 00:00 (最長 45 秒)";
+  if (btn) {
+    btn.classList.remove("recording");
+    btn.innerHTML = `🔴 點這裡開始錄音說故事`;
+  }
+  updateLiveQuestPreview();
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   // 立即同步渲染全站內容（不等候網路請求，確保畫面 0 延遲呈現）
@@ -1611,25 +1998,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const charClass = appState.classes.find(c => c.id === student.classId) || appState.classes[0];
     const oldLv = getLevelInfo(student.xp).level;
     const oldStage = getCharacterStageInfo(charClass, oldLv).activeStage.stage;
+    const isJunior = document.body.classList.contains("junior-mode");
 
-    const s1 = document.getElementById("promptSummaryInput").value.trim();
-    const s2 = document.getElementById("promptTakeawayInput").value.trim();
-    const s3 = document.getElementById("promptQuoteInput").value.trim();
-    const reviewText = `【核心摘要】${s1}\n【深刻啟發】${s2}${s3 ? `\n【喜愛金句】${s3}` : ""}`;
+    let s1 = document.getElementById("promptSummaryInput").value.trim();
+    let s2 = document.getElementById("promptTakeawayInput").value.trim();
+    let s3 = document.getElementById("promptQuoteInput").value.trim();
+    const audioData = window.juniorRecordedAudioDataUrl || "";
+
+    if (isJunior) {
+      if (!s1 && audioData) {
+        s1 = "🎙️ 我用麥克風錄下了這本書的故事與喜愛分享！（請點擊下方語音播放收聽）";
+      } else if (!s1) {
+        s1 = "這本書的圖畫好漂亮，故事超級有趣！";
+      }
+      if (!s2) {
+        s2 = audioData ? "完成「小小說書人」語音錄音打卡任務！" : "讀完這本書讓我學到好多新知識，我想推薦給好朋友一起看！";
+      }
+    }
+
+    const reviewText = isJunior
+      ? `【小小說書人分享】${s1}`
+      : `【核心摘要】${s1}\n【深刻啟發】${s2}${s3 ? `\n【喜愛金句】${s3}` : ""}`;
 
     const payload = {
       studentId: student.id,
       bookTitle: document.getElementById("bookTitleInput").value.trim(),
-      author: document.getElementById("bookAuthorInput").value.trim(),
+      author: document.getElementById("bookAuthorInput").value.trim() || (isJunior ? "繪本故事" : ""),
       category: document.getElementById("bookCategorySelect").value,
-      pages: Number(document.getElementById("bookPagesInput").value) || 120,
+      pages: Number(document.getElementById("bookPagesInput").value) || (isJunior ? 32 : 120),
       difficulty: Number(document.getElementById("bookDifficultySelect").value) || 3,
       rating: Number(document.getElementById("bookRatingSelect").value) || 5,
       moodTags: Array.from(selectedMoodTags),
       promptSummary: s1,
       promptTakeaway: s2,
       promptQuote: s3,
-      reviewText
+      reviewText,
+      audioData
     };
 
     let xpEarned = 220;
@@ -1684,6 +2088,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("promptSummaryInput").value = "";
     document.getElementById("promptTakeawayInput").value = "";
     document.getElementById("promptQuoteInput").value = "";
+    if (typeof window.clearJuniorVoiceRecording === "function") {
+      window.clearJuniorVoiceRecording();
+    }
 
     renderAll();
     switchTab("dashboard");
