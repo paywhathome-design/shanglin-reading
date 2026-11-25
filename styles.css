@@ -1,0 +1,1703 @@
+/* ==========================================================================
+   上林閱讀生態系 (Shanglin Reading Ecosystem) - 軟萌黃綠色檸檬系視覺系統
+   角色圖卡統一採用精緻 2×2 公分 (約 76px × 76px / 2cm × 2cm) 軟萌貼紙圓角設計
+   ========================================================================== */
+:root {
+  --bg-lemon-cream: #fefce8;
+  --bg-lime-mist: #f7fee7;
+  --bg-card: #ffffff;
+  --bg-soft: #fcfdf5;
+  --primary: #65a30d;          /* 清新青檸綠 */
+  --primary-hover: #4d7c0f;    /* 森林深檸綠 */
+  --primary-light: #ecfccb;    /* 軟萌淺嫩綠 */
+  --accent: #eab308;           /* 暖陽檸檬黃 */
+  --accent-light: #fef08a;     /* 奶油檸檬黃 */
+  --emerald: #10b981;
+  --rose: #fb7185;
+  --text-main: #365314;        /* 柔和深橄欖綠文字，不刺眼 */
+  --text-muted: #64748b;
+  --border-color: #d9f99d;     /* 嫩綠邊框 */
+  --shadow-sm: 0 4px 12px rgba(101, 163, 13, 0.08);
+  --shadow-md: 0 10px 24px -5px rgba(101, 163, 13, 0.12), 0 6px 10px -6px rgba(234, 179, 8, 0.08);
+  --shadow-lg: 0 18px 36px -10px rgba(101, 163, 13, 0.18);
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  /* 角色圖片滿框放大尺寸：主橫幅 210px、角色選擇卡滿版方框、晉級路線與工坊滿版方框 */
+  --char-hero-size: 210px;
+  --char-select-size: 190px;
+  --char-stage-size: 175px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", "Rounded Mplus 1c", system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at 12% 12%, #fef9c3 0%, #f7fee7 48%, #ecfccb 100%);
+  background-attachment: fixed;
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* 頂部軟萌檸檬綠導覽列（支援滿版淡化師生團體照與上林國小校徽） */
+.top-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(254, 252, 232, 0.94);
+  backdrop-filter: blur(12px);
+  color: var(--text-main);
+  padding: 0.85rem 1.5rem;
+  box-shadow: 0 4px 20px rgba(101, 163, 13, 0.14);
+  border-bottom: 3px solid #bef264;
+  overflow: hidden;
+}
+
+/* 頁首置頂滿版背景團體照：調淡透明度與柔焦覆蓋，不影響按鍵與標題清晰度 */
+.top-navbar .header-bg-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center 28%;
+  opacity: 0.42;
+  pointer-events: none;
+  z-index: 0;
+  filter: saturate(1.12) contrast(1.03);
+  transition: opacity 0.35s ease;
+}
+
+.top-navbar:hover .header-bg-photo {
+  opacity: 0.50;
+}
+
+.top-navbar .header-bg-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(254, 252, 232, 0.88) 0%,
+    rgba(247, 254, 231, 0.65) 40%,
+    rgba(247, 254, 231, 0.65) 72%,
+    rgba(254, 252, 232, 0.88) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.navbar-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-emblem {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.55rem;
+  box-shadow: 0 4px 14px rgba(132, 204, 22, 0.35);
+  border: 2.5px solid #84cc16;
+  padding: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.brand-emblem:hover {
+  transform: scale(1.1) rotate(4deg);
+}
+
+.brand-school-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  display: block;
+}
+
+.brand-group-photo-pill {
+  width: 108px;
+  height: 48px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2.5px solid #84cc16;
+  box-shadow: 0 4px 12px rgba(101, 163, 13, 0.22);
+  cursor: pointer;
+  background: #ffffff;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.brand-group-photo-pill:hover {
+  transform: scale(1.07);
+  box-shadow: 0 6px 16px rgba(101, 163, 13, 0.35);
+}
+
+.brand-group-photo-pill img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+  display: block;
+}
+
+.brand-title h1 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #365314;
+}
+
+.brand-title p {
+  font-size: 0.78rem;
+  color: #4d7c0f;
+  font-weight: 600;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.nav-tab-btn {
+  background: #ffffff;
+  color: #3f6212;
+  border: 2px solid #d9f99d;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(101, 163, 13, 0.06);
+}
+
+.nav-tab-btn:hover {
+  background: #f7fee7;
+  border-color: #a3e635;
+  transform: translateY(-2px);
+}
+
+.nav-tab-btn.active {
+  background: linear-gradient(135deg, #84cc16 0%, #eab308 100%);
+  color: #ffffff;
+  border-color: #fef08a;
+  box-shadow: 0 5px 14px rgba(132, 204, 22, 0.38);
+}
+
+.user-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sync-pill {
+  font-size: 0.75rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sync-pill.online {
+  background: #ecfccb;
+  color: #3f6212;
+  border: 1.5px solid #a3e635;
+}
+
+.sync-pill.local {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1.5px solid #fde047;
+}
+
+.account-select {
+  background: #ffffff;
+  color: #365314;
+  border: 2px solid #bef264;
+  padding: 0.42rem 0.75rem;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-login-modal {
+  background: linear-gradient(135deg, #65a30d 0%, #84cc16 100%);
+  color: #fff;
+  border: 2px solid #ecfccb;
+  padding: 0.45rem 0.95rem;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(101, 163, 13, 0.22);
+}
+
+.btn-login-modal:hover {
+  background: #4d7c0f;
+  transform: translateY(-1px);
+}
+
+/* 主內容容器 */
+.main-container {
+  max-width: 1360px;
+  margin: 1.4rem auto 3rem;
+  padding: 0 1.25rem;
+}
+
+.tab-section {
+  display: none;
+  animation: fadeIn 0.28s ease;
+}
+
+.tab-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 角色英雄橫幅卡片 (軟萌檸檬奶油綠風格 + 2x2cm 精緻角色圖卡) */
+.hero-banner {
+  background: linear-gradient(135deg, #fef9c3 0%, #ecfccb 52%, #d9f99d 100%);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 1.75rem;
+  color: #365314;
+  box-shadow: var(--shadow-lg);
+  border: 3px solid #ffffff;
+  outline: 2.5px solid #bef264;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  right: 18px;
+  top: 12px;
+  width: 82px;
+  height: 82px;
+  background: url("./assets/images/school_logo.png") no-repeat center / contain;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr 330px;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.avatar-showcase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* 滿框放大版主角色展示框 */
+.avatar-frame {
+  width: var(--char-hero-size);
+  height: var(--char-hero-size);
+  border-radius: 26px;
+  background: #ffffff;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(101, 163, 13, 0.28);
+  border: 4px solid #84cc16;
+  position: relative;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-frame:hover {
+  transform: scale(1.05);
+}
+
+.avatar-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stage-ribbon {
+  background: linear-gradient(90deg, #84cc16, #eab308);
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 0.22rem 0.75rem;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 3px 8px rgba(101, 163, 13, 0.25);
+}
+
+.hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.hero-badges-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1024px) {
+  .hero-badges-top {
+    justify-content: center;
+  }
+}
+
+.pill-tag {
+  background: rgba(255, 255, 255, 0.85);
+  color: #3f6212;
+  border: 1.5px solid #bef264;
+  padding: 0.22rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.pill-tag.gold {
+  background: #fef08a;
+  border-color: #facc15;
+  color: #854d0e;
+}
+
+.hero-name-row h2 {
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: #365314;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1024px) {
+  .hero-name-row h2 {
+    justify-content: center;
+  }
+}
+
+.hero-stage-title {
+  color: #b45309;
+  font-size: 1.1rem;
+  font-weight: 900;
+  background: #fef9c3;
+  padding: 0.1rem 0.65rem;
+  border-radius: 999px;
+  border: 1.5px solid #fde047;
+}
+
+.hero-desc {
+  color: #3f6212;
+  font-size: 0.92rem;
+  font-weight: 600;
+  max-width: 650px;
+}
+
+/* 經驗值條 (軟萌檸檬果凍條) */
+.xp-bar-container {
+  background: rgba(255, 255, 255, 0.82);
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  border: 2px solid #bef264;
+}
+
+.xp-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.84rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+  color: #3f6212;
+}
+
+.xp-track {
+  height: 15px;
+  background: #ecfccb;
+  border-radius: 999px;
+  overflow: hidden;
+  padding: 2px;
+  border: 1px solid #bef264;
+}
+
+.xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #84cc16 0%, #facc15 65%, #f59e0b 100%);
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 三大核心閱讀指標卡 (閱讀量、廣度、深度) */
+.hero-stats-box {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.7rem;
+}
+
+.stat-mini-card {
+  background: rgba(255, 255, 255, 0.88);
+  border: 2px solid #d9f99d;
+  padding: 0.75rem;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(101, 163, 13, 0.06);
+}
+
+.stat-mini-card .stat-value {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #4d7c0f;
+  line-height: 1.2;
+}
+
+.stat-mini-card .stat-label {
+  font-size: 0.76rem;
+  color: #65a30d;
+  font-weight: 700;
+  margin-top: 0.18rem;
+}
+
+/* 雙欄卡片佈局 */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 980px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.45rem;
+  box-shadow: var(--shadow-md);
+  border: 2.5px solid var(--border-color);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.15rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px dashed #d9f99d;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.panel-header h3 {
+  font-size: 1.18rem;
+  font-weight: 900;
+  color: #365314;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.panel-subtitle {
+  font-size: 0.84rem;
+  color: #4d7c0f;
+  font-weight: 600;
+}
+
+/* 角色晉級路線圖 (Stage 1 ~ Stage 6 Roadmap，每個角色圖卡約 2×2 公分) */
+.stages-roadmap {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 1180px) {
+  .stages-roadmap {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .stages-roadmap {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.stage-node {
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 0.8rem 0.65rem;
+  text-align: center;
+  background: #fcfdf5;
+  position: relative;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stage-node.unlocked {
+  border-color: #bef264;
+  background: linear-gradient(180deg, #fefce8 0%, #ffffff 100%);
+}
+
+.stage-node.current {
+  border-color: #84cc16;
+  background: linear-gradient(180deg, #ecfccb 0%, #ffffff 100%);
+  box-shadow: 0 8px 20px rgba(132, 204, 22, 0.22);
+  transform: translateY(-3px);
+}
+
+.stage-node.locked {
+  border: 2px dashed #cbd5e1;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  cursor: pointer;
+}
+
+.stage-node.locked:hover {
+  border-color: #84cc16;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(101, 163, 13, 0.16);
+}
+
+/* 滿框放大版 Stage 1~6 晉級角色圖卡（與方框同寬同高、零留白） */
+.stage-img-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin: 0.35rem auto 0.55rem;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 3px solid #84cc16;
+  background: #ffffff;
+  box-shadow: 0 6px 14px rgba(101, 163, 13, 0.16);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stage-node img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #ffffff;
+  padding: 0;
+}
+
+/* 未解鎖角色：神秘隱藏版黑影剪影特效 */
+.mystery-silhouette-box {
+  border-color: #94a3b8;
+  background: radial-gradient(circle at 50% 45%, #334155 0%, #0f172a 100%);
+}
+
+.mystery-silhouette-img {
+  filter: brightness(0) invert(0.12) opacity(0.55) blur(1px) !important;
+  background: transparent !important;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.stage-node.locked:hover .mystery-silhouette-img {
+  transform: scale(1.05);
+  filter: brightness(0) invert(0.18) opacity(0.7) blur(0.5px) !important;
+}
+
+.mystery-badge-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  pointer-events: none;
+}
+
+.mystery-lock-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(254, 240, 138, 0.95);
+  border: 2.5px solid #eab308;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.mystery-secret-tag {
+  background: rgba(15, 23, 42, 0.85);
+  color: #fef08a;
+  border: 1.5px solid #fde047;
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.stage-node .mystery-title {
+  color: #475569;
+  font-size: 0.88rem;
+}
+
+.stage-node .mystery-desc {
+  color: #64748b;
+  font-size: 0.73rem;
+  font-weight: 700;
+}
+
+.stage-node .stage-lv {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #475569;
+  margin-bottom: 0.25rem;
+}
+
+.stage-node.unlocked .stage-lv {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fde047;
+}
+
+.stage-node.current .stage-lv {
+  background: #65a30d;
+  color: #fff;
+}
+
+.stage-node h4 {
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #365314;
+  margin-bottom: 0.2rem;
+}
+
+.stage-node p {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+/* 閱讀廣度八大星域雷達與知識格 */
+.breadth-layout {
+  display: grid;
+  grid-template-columns: 270px 1fr;
+  gap: 1.15rem;
+  align-items: center;
+}
+
+@media (max-width: 720px) {
+  .breadth-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.radar-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+}
+
+.cat-badge-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 16px;
+  border: 2px solid #ecfccb;
+  background: #fcfdf5;
+  transition: 0.2s;
+}
+
+.cat-badge-card.lit {
+  background: #ffffff;
+  border-color: #a3e635;
+  box-shadow: 0 4px 10px rgba(101, 163, 13, 0.08);
+}
+
+.cat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  background: #f1f5f9;
+  flex-shrink: 0;
+}
+
+.cat-badge-card.lit .cat-icon {
+  background: var(--cat-color, #65a30d);
+  color: #fff;
+}
+
+.cat-meta h5 {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #365314;
+}
+
+.cat-meta span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 閱讀深度量表 */
+.depth-meters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 680px) {
+  .depth-meters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.depth-box {
+  background: linear-gradient(135deg, #fefce8 0%, #ecfccb 100%);
+  border: 2px solid #bef264;
+  padding: 0.9rem;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.depth-box .d-val {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #4d7c0f;
+}
+
+.depth-box .d-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #365314;
+}
+
+.depth-box .d-sub {
+  font-size: 0.73rem;
+  color: var(--text-muted);
+}
+
+/* 撰寫書評表單 */
+.quest-form-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 980px) {
+  .quest-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.1rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #365314;
+  margin-bottom: 0.4rem;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .form-row-2, .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.68rem 0.9rem;
+  border: 2px solid #d9f99d;
+  border-radius: 14px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  background: #fff;
+  color: #365314;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #84cc16;
+  box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.2);
+}
+
+/* 心情與收穫標籤選擇器 */
+.mood-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mood-chip {
+  padding: 0.38rem 0.85rem;
+  border-radius: 999px;
+  border: 2px solid #d9f99d;
+  background: #fefce8;
+  color: #4d7c0f;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.18s;
+  user-select: none;
+}
+
+.mood-chip.selected {
+  background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+  color: #fff;
+  border-color: #65a30d;
+  box-shadow: 0 3px 8px rgba(101, 163, 13, 0.28);
+}
+
+/* 引導式書評模板卡片 */
+.guided-prompt-box {
+  background: #fefce8;
+  border: 2px solid #fde047;
+  border-radius: 18px;
+  padding: 1.05rem;
+  margin-bottom: 1rem;
+}
+
+.guided-step {
+  margin-bottom: 0.85rem;
+}
+
+.guided-step:last-child {
+  margin-bottom: 0;
+}
+
+.guided-step-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #365314;
+  margin-bottom: 0.35rem;
+}
+
+.step-badge {
+  background: #65a30d;
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+}
+
+/* 即時深度與經驗值預覽面板 (軟萌檸檬綠漸層) */
+.live-preview-card {
+  background: linear-gradient(160deg, #fef9c3 0%, #ecfccb 55%, #d9f99d 100%);
+  color: #365314;
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  position: sticky;
+  top: 90px;
+  border: 3px solid #a3e635;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.preview-meter-circle {
+  width: 155px;
+  height: 155px;
+  border-radius: 50%;
+  margin: 0.85rem auto;
+  background: #ffffff;
+  border: 6px solid #84cc16;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.5rem;
+  box-shadow: 0 6px 20px rgba(132, 204, 22, 0.25);
+}
+
+.preview-meter-circle .score-num {
+  font-size: 2.35rem;
+  font-weight: 900;
+  color: #4d7c0f;
+  line-height: 1.05;
+  text-align: center;
+  width: 100%;
+}
+
+.preview-meter-circle .score-lbl {
+  font-size: 0.78rem;
+  color: #65a30d;
+  font-weight: 800;
+  margin-top: 0.3rem;
+  text-align: center;
+  line-height: 1.3;
+  width: 100%;
+}
+
+/* 按鈕樣式（注意主要按鍵文字不隨意換行、段落美觀） */
+.btn-primary {
+  background: linear-gradient(135deg, #65a30d 0%, #84cc16 100%);
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 16px;
+  font-size: 0.98rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 6px 16px rgba(101, 163, 13, 0.28);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(101, 163, 13, 0.36);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #eab308 0%, #f59e0b 100%);
+  color: #fff;
+  border: 2px solid #fef08a;
+  padding: 0.72rem 1.3rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(234, 179, 8, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-outline {
+  background: #fff;
+  color: #3f6212;
+  border: 2px solid #bef264;
+  padding: 0.55rem 1rem;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-outline:hover {
+  background: #f7fee7;
+  border-color: #84cc16;
+  color: #365314;
+}
+
+/* 書評卡片牆 */
+.reviews-filter-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.reviews-wall-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.25rem;
+}
+
+.review-card {
+  background: #fff;
+  border-radius: 22px;
+  padding: 1.35rem;
+  border: 2px solid #d9f99d;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.9rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.review-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.review-book-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.book-title-group h4 {
+  font-size: 1.12rem;
+  font-weight: 900;
+  color: #365314;
+}
+
+.book-title-group p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.depth-pill {
+  background: #ecfccb;
+  color: #3f6212;
+  border: 1.5px solid #bef264;
+  padding: 0.22rem 0.68rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.review-body-text {
+  font-size: 0.9rem;
+  color: #365314;
+  white-space: pre-line;
+  background: #fcfdf5;
+  padding: 0.85rem;
+  border-radius: 14px;
+  border-left: 4px solid #84cc16;
+}
+
+.teacher-reply-box {
+  background: #fefce8;
+  border: 1.5px solid #fde047;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  color: #854d0e;
+}
+
+.review-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.6rem;
+  border-top: 1.5px dashed #ecfccb;
+  font-size: 0.82rem;
+}
+
+/* 角色職業殿堂與圖片插槽設定 (5種雙溪在地生物角色，圖卡 2×2 公分) */
+.class-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 1200px) {
+  .class-selector-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .class-selector-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .class-selector-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.class-option-card {
+  border-radius: 22px;
+  padding: 1.05rem;
+  border: 2.5px solid #d9f99d;
+  background: linear-gradient(180deg, #fefce8 0%, #ffffff 100%);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.class-option-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.class-option-card.active-class {
+  border-color: #84cc16;
+  background: linear-gradient(180deg, #ecfccb 0%, #ffffff 100%);
+  box-shadow: 0 12px 26px rgba(132, 204, 22, 0.22);
+}
+
+/* 角色選擇卡內的角色圖卡：放大到與方框完全一樣大 */
+.class-option-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 0;
+  overflow: hidden;
+  border: 3px solid #84cc16;
+  box-shadow: 0 6px 16px rgba(101, 163, 13, 0.18);
+}
+
+/* 教師與角色圖案自訂工坊 (Stage 1 ~ Stage 6，圖卡與方框一樣大) */
+.stage-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.15rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 960px) {
+  .stage-upload-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .stage-upload-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stage-slot-card {
+  border: 2.5px solid #a3e635;
+  border-radius: 22px;
+  padding: 1rem;
+  text-align: center;
+  background: #fcfdf5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+/* 角色工坊內的圖卡預覽：放大到與方框完全一樣大 (220px × 220px 滿框無留白) */
+.stage-slot-card img {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  background: #fff;
+  border-radius: 20px;
+  padding: 0;
+  overflow: hidden;
+  border: 3.5px solid #84cc16;
+  box-shadow: 0 6px 16px rgba(101, 163, 13, 0.18);
+}
+
+/* 排行榜表格 */
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1.5px solid #ecfccb;
+}
+
+.leaderboard-table th {
+  background: #f7fee7;
+  font-size: 0.84rem;
+  color: #3f6212;
+  font-weight: 800;
+}
+
+.rank-medal {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.88rem;
+}
+
+.rank-1 { background: #fef08a; color: #854d0e; border: 2px solid #facc15; }
+.rank-2 { background: #ecfccb; color: #3f6212; border: 2px solid #84cc16; }
+.rank-3 { background: #ffedd5; color: #9a3412; border: 2px solid #fb923c; }
+
+/* 徽章成就網格 */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.9rem;
+}
+
+.badge-item {
+  border: 2px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fcfdf5;
+}
+
+.badge-item.earned {
+  background: linear-gradient(135deg, #fefce8 0%, #ecfccb 100%);
+  border-color: #a3e635;
+}
+
+.badge-item.locked {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+.badge-emoji {
+  font-size: 1.85rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 晉級與通知彈窗 (Modal) */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(54, 83, 20, 0.55);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 1rem;
+}
+
+.modal-backdrop.show {
+  display: flex;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 28px;
+  max-width: 500px;
+  width: 100%;
+  padding: 1.85rem;
+  text-align: center;
+  border: 4px solid #a3e635;
+  box-shadow: 0 25px 60px rgba(54, 83, 20, 0.28);
+  animation: popIn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* 班級閱讀風雲榜卡片網格 */
+.class-rank-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.class-rank-card {
+  background: linear-gradient(135deg, #fefce8 0%, #f7fee7 100%);
+  border: 2.5px solid #bef264;
+  border-radius: 20px;
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 身分選擇切換鈕與快速帶入標籤 */
+.identity-mode-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  background: #f7fee7;
+  padding: 0.4rem;
+  border-radius: 16px;
+  border: 2px solid #d9f99d;
+}
+
+.identity-tab-btn {
+  background: transparent;
+  color: #4d7c0f;
+  border: none;
+  padding: 0.6rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+.identity-tab-btn.active {
+  background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(101, 163, 13, 0.25);
+}
+
+.quick-fill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.quick-chip {
+  background: #fefce8;
+  border: 1.5px solid #bef264;
+  color: #365314;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.18s;
+  white-space: nowrap;
+}
+
+.quick-chip:hover {
+  background: #ecfccb;
+  border-color: #84cc16;
+}
+
+/* 角色圖案工坊：雙溪五角色直覺切換按鈕列 */
+.workshop-char-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+}
+
+@media (max-width: 920px) {
+  .workshop-char-tabs {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .workshop-char-tabs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.workshop-char-btn {
+  background: #ffffff;
+  color: #365314;
+  border: 2px solid #bef264;
+  padding: 0.6rem 0.75rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.workshop-char-btn:hover {
+  background: #ecfccb;
+  border-color: #84cc16;
+  transform: translateY(-1px);
+}
+
+.workshop-char-btn.active {
+  background: linear-gradient(135deg, #65a30d 0%, #84cc16 100%);
+  color: #ffffff;
+  border-color: #4d7c0f;
+  box-shadow: 0 4px 12px rgba(101, 163, 13, 0.28);
+}
+
+/* ==========================================================================
+   index3 專屬精簡版頭 (Compact Header & Hero Banner)：大幅縮短高度、釋放主畫面空間
+   ========================================================================== */
+.top-navbar.compact-header {
+  padding: 0.42rem 1.15rem;
+}
+
+.top-navbar.compact-header .navbar-inner {
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 1180px) {
+  .top-navbar.compact-header .navbar-inner {
+    flex-wrap: wrap;
+  }
+}
+
+.top-navbar.compact-header .brand-logo {
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.top-navbar.compact-header .brand-emblem {
+  width: 38px;
+  height: 38px;
+}
+
+.top-navbar.compact-header .brand-group-photo-pill {
+  width: 76px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.top-navbar.compact-header .brand-title h1 {
+  font-size: 1.12rem;
+  line-height: 1.15;
+}
+
+.top-navbar.compact-header .brand-title p {
+  font-size: 0.68rem;
+  line-height: 1.15;
+}
+
+.top-navbar.compact-header .nav-tabs {
+  gap: 0.32rem;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 960px) {
+  .top-navbar.compact-header .nav-tabs {
+    flex-wrap: wrap;
+  }
+}
+
+.top-navbar.compact-header .nav-tab-btn {
+  padding: 0.34rem 0.72rem;
+  font-size: 0.82rem;
+}
+
+.top-navbar.compact-header .user-switcher {
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.top-navbar.compact-header .sync-pill {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.52rem;
+}
+
+.top-navbar.compact-header .account-select {
+  padding: 0.3rem 0.55rem;
+  font-size: 0.8rem;
+  max-width: 215px;
+}
+
+.top-navbar.compact-header .btn-login-modal {
+  padding: 0.32rem 0.72rem;
+  font-size: 0.8rem;
+}
+
+/* 精簡版角色英雄橫幅 (Compact Hero Banner) */
+.hero-banner.compact-hero {
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: 22px;
+}
+
+.hero-banner.compact-hero .hero-grid {
+  grid-template-columns: 142px 1fr 295px;
+  gap: 1.1rem;
+}
+
+@media (max-width: 1024px) {
+  .hero-banner.compact-hero .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-banner.compact-hero .avatar-showcase {
+  gap: 0.35rem;
+}
+
+.hero-banner.compact-hero .avatar-frame {
+  width: 130px;
+  height: 130px;
+  border-radius: 20px;
+  border-width: 3px;
+}
+
+.hero-banner.compact-hero .stage-ribbon {
+  font-size: 0.68rem;
+  padding: 0.14rem 0.6rem;
+}
+
+.hero-banner.compact-hero .hero-info {
+  gap: 0.32rem;
+}
+
+.hero-banner.compact-hero .pill-tag {
+  padding: 0.15rem 0.6rem;
+  font-size: 0.74rem;
+}
+
+.hero-banner.compact-hero .hero-name-row h2 {
+  font-size: 1.32rem;
+}
+
+.hero-banner.compact-hero .hero-stage-title {
+  font-size: 0.95rem;
+  padding: 0.08rem 0.55rem;
+}
+
+.hero-banner.compact-hero .hero-desc {
+  font-size: 0.83rem;
+  line-height: 1.4;
+}
+
+.hero-banner.compact-hero .xp-bar-container {
+  padding: 0.48rem 0.8rem;
+  border-radius: 14px;
+}
+
+.hero-banner.compact-hero .xp-label-row {
+  font-size: 0.78rem;
+  margin-bottom: 0.25rem;
+}
+
+.hero-banner.compact-hero .xp-track {
+  height: 11px;
+}
+
+.hero-banner.compact-hero .hero-stats-box {
+  gap: 0.48rem;
+}
+
+.hero-banner.compact-hero .stat-mini-card {
+  padding: 0.48rem 0.55rem;
+  border-radius: 14px;
+}
+
+.hero-banner.compact-hero .stat-mini-card .stat-value {
+  font-size: 1.2rem;
+}
+
+.hero-banner.compact-hero .stat-mini-card .stat-label {
+  font-size: 0.71rem;
+  margin-top: 0.1rem;
+}
+
+
+
